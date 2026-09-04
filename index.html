@@ -66,6 +66,9 @@
   .blk.mobb .bh .tag{background:var(--mob);color:var(--bg)}
   .bh h2{font-size:16px;margin:0;font-weight:650;letter-spacing:-.01em;flex:1}
   .prog{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;font-weight:650}
+  .dur{font-size:11.5px;font-weight:700;color:var(--accent);background:var(--accent-soft);
+       padding:3px 8px;border-radius:999px;font-variant-numeric:tabular-nums}
+  .row.ssline{border-left:3px solid var(--accent);margin-left:-3px}
   .pbar{height:3px;background:var(--line)}
   .pfill{height:100%;background:var(--done);width:0;transition:width .2s}
 
@@ -107,7 +110,12 @@
   @media (prefers-color-scheme: dark){ .mini.go{color:#141210} }
   .adj{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--surface)}
   .adj button{border:none;background:none;padding:6px 11px;font-size:15px;font-weight:700;line-height:1}
-  .adj span{font-size:12.5px;color:var(--muted);padding:0 4px;border-left:1px solid var(--line);border-right:1px solid var(--line)}
+  .adj input.kginput{width:64px;border:none;border-left:1px solid var(--line);background:none;
+    color:var(--ink);font:inherit;font-weight:700;font-variant-numeric:tabular-nums;
+    text-align:center;padding:7px 2px;border-radius:0;-webkit-appearance:none}
+  .adj input.kginput:focus{outline:none;background:var(--accent-soft);color:var(--accent)}
+  .adjunit{font-size:12px;color:var(--muted);padding:0 9px 0 3px;border-right:1px solid var(--line);
+    align-self:stretch;display:flex;align-items:center}
 
   /* ---- timer ---- */
   .timer{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--surface);
@@ -161,6 +169,25 @@
   .flowbtns .go{background:var(--mob);color:var(--bg);border-color:var(--mob)}
 
   .origtag{font-size:12px;color:var(--muted)}
+  .rkg.vacio{color:var(--muted);background:transparent;border:1px dashed var(--line);font-weight:600}
+  .bq{color:var(--accent);font-weight:800;font-size:12px;margin-right:2px}
+  .notaprog{font-size:13px;color:var(--muted);margin:10px 0 0;padding:9px 12px;
+    background:var(--surface);border-radius:9px;border:1px solid var(--line)}
+  .adj input.kginput.wide{width:78px}
+  .adjt{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+  .adjt th{text-align:left;font-size:10px;letter-spacing:.07em;text-transform:uppercase;
+           color:var(--muted);font-weight:700;padding:6px 6px;border-bottom:1px solid var(--line)}
+  .adjt td{padding:8px 6px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;vertical-align:middle}
+  .adjt td:first-child{font-weight:600}
+  .adjt .dlt{color:var(--muted);text-decoration:line-through}
+  .adjt .nw{color:var(--accent);font-weight:700;white-space:nowrap}
+  .adjt .all{color:var(--muted);font-size:12px}
+  .origtag{font-size:12px;color:var(--muted)}
+  .rkg.vacio{color:var(--muted);background:transparent;border:1px dashed var(--line);font-weight:600}
+  .bq{color:var(--accent);font-weight:800;font-size:12px;margin-right:2px}
+  .notaprog{font-size:13px;color:var(--muted);margin:10px 0 0;padding:9px 12px;
+    background:var(--surface);border-radius:9px;border:1px solid var(--line)}
+  .adj input.kginput.wide{width:78px}
   .adjt{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
   .adjt th{text-align:left;font-size:10px;letter-spacing:.07em;text-transform:uppercase;
            color:var(--muted);font-weight:700;padding:6px 6px;border-bottom:1px solid var(--line)}
@@ -206,14 +233,6 @@
   .vpick{display:flex;flex-direction:column;gap:9px;margin-top:14px}
   .vpick button{border:1px solid var(--line);background:var(--surface);border-radius:13px;
                 padding:17px;font-size:16px;font-weight:650;text-align:left}
-  .vopts{max-height:38vh;overflow:auto;margin:4px -4px 10px;padding:0 4px}
-  .vopt{display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;
-        border:1px solid var(--line);background:var(--bg);border-radius:11px;padding:11px 13px;
-        margin-bottom:7px;text-align:left;font-size:14px;font-weight:600}
-  .vopt.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
-  .vplay{font-size:12px;font-weight:700;color:var(--accent);flex:none}
-  .fld input[type=range]{accent-color:var(--accent);padding:0}
-  .vheard{font-size:12.5px;color:var(--accent);min-height:18px;margin-top:8px}
 
   .foot{margin-top:30px;font-size:12px;color:var(--muted);line-height:1.6}
   .foot b{color:var(--ink)}
@@ -237,8 +256,6 @@
   <button class="tool" onclick="openPlates()">Calculadora de discos</button>
   <button class="tool" onclick="openRM()">Estimador de 1RM</button>
   <button class="tool" onclick="openFlow()">Movilidad guiada</button>
-  <button class="tool" onclick="openVoice()">Modo voz</button>
-  <button class="tool ghosty" onclick="openVoiceSettings()">Ajustes de voz</button>
   <button class="tool ghosty" onclick="copySummary()" id="cpbtn">Copiar resumen</button>
   <button class="tool ghosty" onclick="resetAll()">Reiniciar</button>
 </div>
@@ -247,10 +264,20 @@
 <div id="app"></div>
 
 <p class="foot">
-  <b>Cómo se usa.</b> Toca el círculo de la izquierda una vez por serie completada: al llenarse queda marcado y el cronómetro arranca solo con el descanso de ese ejercicio. Toca el nombre para ver el dibujo del movimiento y las claves técnicas. Los kilos se ajustan con − y + si la estimación no encaja.<br><br>
-  <b>Los pesos son estimaciones</b> a partir de tus 70 kg en sentadilla y 50 en press banca. La primera semana es de calibración: si acabas la última serie con más de 3 repeticiones de sobra, sube; si no completas, baja.<br><br>
-  <b>Tus ajustes y series se guardan solos</b>, en la dirección de la página y también en el propio navegador. Si la recargas, siguen ahí. Guarda el enlace en favoritos y tendrás tu calibración disponible siempre que lo abras.<br><br>
-  <b>Lumbar.</b> Molestia muscular difusa al día siguiente es normal. Dolor punzante y localizado durante la serie, para. Dolor que baja por la pierna, para y consulta. Los 10 minutos de movilidad son diarios, entrenes o no.
+  <b>Cómo se usa.</b> Toca el círculo una vez por serie completada: al llenarse queda marcado y el
+  cronómetro arranca con el descanso de ese ejercicio. Toca el nombre para ver el dibujo, las claves
+  técnicas y la nota de progresión. Ahí mismo anotas <b>tu carga</b> y ajustas las <b>repeticiones</b>
+  dentro del rango.<br><br>
+  <b>Los pesos los pones tú.</b> No hay kilos predeterminados: el programa te da el rango de repeticiones
+  y el RIR, y tú anotas lo que mueves de verdad. Gimnasio y casa llevan historiales separados que no se
+  mezclan ni se convierten uno en otro.<br><br>
+  <b>Doble progresión.</b> Sube repeticiones dentro del rango hasta tocar el tope en todas las series.
+  Ahí subes carga y vuelves al extremo bajo. En casa, cuando 16 kg se queden cortos, la progresión pasa
+  a tempo, pausas, unilateralidad, rango y dificultad mecánica, en ese orden.<br><br>
+  <b>El calentamiento está dentro.</b> Las duraciones que ves incluyen 4,5 minutos de movilidad dinámica
+  y series de aproximación. El bloque largo de movilidad queda como opcional para los días sin gimnasio.<br><br>
+  <b>El sonido en el iPhone.</b> Si el temporizador no suena, casi siempre es el interruptor lateral de
+  silencio. Prueba con el botón ♪ de la barra del cronómetro.
 </p>
 
 </div>
@@ -265,18 +292,7 @@
   </div>
   <button class="tbtn" id="tgo" onclick="toggleT()">Iniciar</button>
   <button class="tbtn sec" onclick="setT(0)">0</button>
-</div>
-
-<div class="vmode" id="vmode">
-  <div class="vtop">
-    <span class="vday" id="vday"></span>
-    <button class="vmic" id="vmic" onclick="toggleMic()" style="display:none">Micro</button>
-    <button class="vx" onclick="openVoiceSettings()">Voz</button>
-    <button class="vx" onclick="closeVoice()">Salir</button>
-  </div>
-  <div class="vbody" id="vbody"></div>
-  <div class="vbtns" id="vbtns"></div>
-  <div class="vheard" id="vheard" style="text-align:center"></div>
+  <button class="tbtn sec" onclick="probarSonido(this)" title="Probar el sonido">♪</button>
 </div>
 
 <div class="ov" id="ov" onclick="if(event.target===this)closeOv()">
@@ -1003,6 +1019,49 @@ const CASA_DRAW = [
    legs:[[[100,114],[100,150],[98,182],[112,184]]],
    eq:[{t:"db",at:[100,26]}]}]},
 
+{name:"Peso muerto con barra hexagonal", tag:"Trap bar",
+ cues:["La barra hexagonal te sitúa <b>dentro</b> del peso: menos brazo de palanca sobre la columna y más trabajo de pierna que con barra recta.",
+  "Pecho arriba, aire dentro y abdomen apretado <b>antes</b> de despegar. Empuja el suelo con los pies en lugar de tirar con la espalda.",
+  "Si tu gimnasio no la tiene, haz peso muerto rumano con barra: mismo hueco, misma función.",
+  "Con tu lumbar: la serie termina cuando la posición se degrada, no cuando fallas la repetición."],
+ poses:[
+  {bg:[FLOOR(184)],head:[122,82],spine:[[112,94],[88,124]],
+   arms:[[[110,96],[108,130],[106,162]]],
+   legs:[[[88,124],[106,148],[96,180],[110,184]]],
+   eq:[{t:"bar",at:[106,166],big:true}]},
+  {bg:[FLOOR(184)],head:[104,48],spine:[[100,66],[100,112]],
+   arms:[[[106,72],[110,94],[111,118]]],
+   legs:[[[100,112],[100,150],[98,182],[112,184]]],
+   eq:[{t:"bar",at:[111,120],big:true}]}]},
+
+{name:"Box jump", tag:"Cajón", labels:["Impulso","Recepción"],
+ cues:["Bloque de <b>potencia</b>, no de acondicionamiento: 3 repeticiones, un minuto de descanso, lejos del fallo.",
+  "Balancea los brazos, cadera atrás en un cuarto de sentadilla, y salta con todo.",
+  "Recibe <b>suave y con las rodillas flexionadas</b>, sobre el cajón entero. Baja andando, nunca saltando.",
+  "Progresa por altura o por velocidad de despegue, jamás por número de repeticiones."],
+ poses:[
+  {bg:[{t:"box",x:132,y:126,w:56,h:58},FLOOR(184)],
+   head:[100,74],spine:[[98,90],[88,124]],
+   arms:[[[98,92],[80,108],[66,124]]],
+   legs:[[[88,124],[110,146],[98,180],[112,184]]]},
+  {bg:[{t:"box",x:132,y:126,w:56,h:58},FLOOR(184)],
+   head:[152,66],spine:[[150,82],[142,112]],
+   arms:[[[150,84],[136,98],[124,110]]],
+   legs:[[[142,112],[160,124],[150,126],[164,128]]]}]},
+
+{name:"Squat jump", tag:"Peso corporal", labels:["Carga","Vuelo"],
+ cues:["El equivalente en casa del box jump. Mismo objetivo: <b>3 repeticiones rápidas</b> y a descansar.",
+  "Baja a un cuarto de sentadilla y salta lo más alto que puedas. Sin pausa abajo.",
+  "Aterriza <b>de puntillas primero</b> y amortigua flexionando rodilla y cadera.",
+  "Si notas la lumbar o las rodillas cargadas, cambia a saltos al banco: menos impacto en la caída."],
+ poses:[
+  {bg:[FLOOR(184)],head:[104,76],spine:[[100,92],[90,126]],
+   arms:[[[100,94],[82,110],[68,126]]],
+   legs:[[[90,126],[112,148],[98,182],[112,184]]]},
+  {bg:[FLOOR(184)],head:[104,34],spine:[[100,50],[100,94]],
+   arms:[[[100,52],[104,30],[106,10]]],
+   legs:[[[100,94],[104,124],[100,152],[112,158]]]}]},
+
 {name:"Press banca con mancuernas", tag:"Banco horizontal",
  cues:["Escápulas <b>retraídas y hundidas</b>, cinco puntos de apoyo. Igual que con barra.",
   "Con mancuernas puedes bajar más que con barra: aprovecha ese rango, es la ventaja del material que tienes.",
@@ -1162,180 +1221,204 @@ const ALIAS = {
  "Paseo del granjero con mancuernas": "Paseo del granjero con kettlebells",
  "Peso muerto rumano pesado con mancuernas": "Peso muerto rumano con mancuernas",
  "Sentadilla goblet con mancuerna y pausa": "Sentadilla goblet con mancuerna",
- "Aperturas con mancuernas en banco": "Aperturas con mancuernas"
+ "Aperturas con mancuernas en banco": "Aperturas con mancuernas",
+ "Dominada o jalón al pecho": "Dominadas lastradas",
+ "Press banca con barra": "Press banca",
+ "Press inclinado 30° con mancuernas": "Press inclinado con mancuernas",
+ "Press inclinado 45° con mancuernas": "Press inclinado con mancuernas",
+ "Elevación lateral con mancuernas": "Elevaciones laterales",
+ "Curl con barra": "Curl con barra",
+ "Pallof press con polea o goma": "Pallof press con banda",
+ "Circuito: face pull → curl martillo → tríceps": "Face pull con goma",
+ "Circuito: face pull → curl martillo → fondos": "Face pull con goma",
+ "Peso muerto rumano a una pierna": "Peso muerto a una pierna con kettlebell",
+ "Acondicionamiento · bici, remo o SkiErg": "Step-up al banco",
+ "Acondicionamiento · step-ups rápidos o shadow boxing": "Step-up al banco",
+ "Remo invertido en anillas": "Remo invertido en barra baja",
+ "Curl nórdico con los pies bajo el banco": "Curl nórdico asistido",
+ "Fondos en anillas": "Fondos en anillas o paralelas",
+ "Dominadas": "Dominadas lastradas",
+ "Curl con mancuernas": "Curl martillo",
+ "Elevación de gemelo a una pierna": "Elevación de gemelo con mancuerna"
 };
 function drawFor(name){ return DRAW[ALIAS[name] || name]; }
 
 /* ================= plan ================= */
-const K = (a,b,c,d,e) => [a,b,c,d,e];
-const MOB_BLK = {id:"mob", kind:"mob", tag:"Diario", title:"Movilidad · 10 min", items:[
-  {n:"Respiración 90/90", s:"60 s", n_:1, rest:0, voz:"Un minuto de respiración noventa noventa. Túmbate boca arriba con las pantorrillas apoyadas en el sofá o una silla, rodillas y caderas en ángulo recto. Inspira cuatro segundos por la nariz llevando el aire a las costillas, y espira seis segundos soplando lento. La lumbar pegada al suelo todo el rato."},
-  {n:"Gato · camello", s:"60 s", n_:1, rest:0, voz:"Un minuto de gato y camello. En cuadrupedia, manos bajo los hombros y rodillas bajo las caderas. Tres segundos redondeando la espalda hacia arriba, y tres segundos hundiéndola. Despacio, sin buscar el rango máximo."},
-  {n:"Rotación torácica en cuadrupedia", s:"40 s / lado", n_:2, rest:0, voz:"Cuarenta segundos por lado de rotación torácica. Desde cuadrupedia, lleva un brazo al techo abriendo el pecho, y después crúzalo por debajo del cuerpo. La pelvis quieta, mirando al suelo. El giro sale del tórax, no de la lumbar."},
-  {n:"Estiramiento de psoas en zancada", s:"40 s / lado", n_:2, rest:0, voz:"Cuarenta segundos por lado de psoas. Rodilla trasera en el suelo, pie delantero plano. Mete la pelvis hacia dentro apretando el glúteo de la pierna de atrás. Lo tienes que notar delante de la cadera trasera. Si lo notas en la lumbar, mete más la pelvis."},
-  {n:"Isquiosurales tumbado", s:"40 s / lado", n_:2, rest:0, voz:"Cuarenta segundos por lado de isquiosurales. Boca arriba, con una toalla o una goma en el pie, y la otra pierna estirada en el suelo. Sube hasta notar tensión, no dolor, y sin despegar la lumbar del suelo."},
-  {n:"Figura 4 · glúteo y piriforme", s:"40 s / lado", n_:2, rest:0, voz:"Cuarenta segundos por lado de figura cuatro. Cruza el tobillo sobre la rodilla contraria y tira de la pierna de apoyo hacia el pecho. Empuja suavemente la rodilla cruzada hacia fuera con la mano."},
-  {n:"Bird-dog", s:"60 s", n_:1, rest:0, voz:"Un minuto de berd dog. Extiende brazo y pierna contrarios hasta la horizontal, cinco segundos cada repetición, alternando lados. Imagina un vaso de agua apoyado en tu lumbar: que no se derrame. Nada de arquear ni girar."},
-  {n:"Dead bug", s:"60 s", n_:1, rest:0, voz:"Un minuto de ded bag. Boca arriba, brazos y piernas en ángulo recto. Baja brazo y pierna contrarios despacio, sin despegar la lumbar del suelo. Espira mientras extiendes. Unas ocho repeticiones por lado."},
-  {n:"Puente de glúteo", s:"45 s", n_:1, rest:0, voz:"Cuarenta y cinco segundos de puente de glúteo. Talones cerca del glúteo. Sube empujando con los talones y aprieta el glúteo dos segundos arriba. Si lo notas en la espalda baja, mete la pelvis antes de subir y no subas tanto."},
-  {n:"Plancha lateral con rodillas flexionadas", s:"25 s / lado", n_:2, rest:0, voz:"Veinticinco segundos por lado de plancha lateral. Apoyo en el antebrazo y las rodillas, cadera arriba, cuerpo en línea recta. Aprieta el glúteo de abajo y respira normal, sin aguantar el aire."}
+const R = (a,b) => [a,b];
+
+const MOB_BLK = {id:"mob", kind:"mob", tag:"Diario", title:"Movilidad · opcional", items:[
+  {n:"Respiración 90/90", s:"60 s", n_:1, rest:0},
+  {n:"Gato · camello", s:"60 s", n_:1, rest:0},
+  {n:"Rotación torácica en cuadrupedia", s:"40 s / lado", n_:2, rest:0},
+  {n:"Estiramiento de psoas en zancada", s:"40 s / lado", n_:2, rest:0},
+  {n:"Isquiosurales tumbado", s:"40 s / lado", n_:2, rest:0},
+  {n:"Figura 4 · glúteo y piriforme", s:"40 s / lado", n_:2, rest:0},
+  {n:"Bird-dog", s:"60 s", n_:1, rest:0},
+  {n:"Dead bug", s:"60 s", n_:1, rest:0},
+  {n:"Puente de glúteo", s:"45 s", n_:1, rest:0},
+  {n:"Plancha lateral con rodillas flexionadas", s:"25 s / lado", n_:2, rest:0}
 ]};
 
+const PROG = {
+ press:"Doble progresión. Cuando hagas el tope del rango en todas las series con RIR 2, sube carga y vuelve al extremo bajo.",
+ dom:"Cuando llegues al tope en las tres series, añade lastre y vuelve abajo.",
+ domC:"Progresa con lastre (mochila) o con excéntrica de 4 s.",
+ incl:"Cuando pases del tope, añade excéntrica de 3 s antes que buscar más repeticiones.",
+ remoC:"Progresa bajando los pies hasta quedar horizontal, antes que sumar repeticiones.",
+ lat:"Sube repeticiones hasta el tope. Con 16 kg, añade parada de 1 s arriba.",
+ tempo:"Cuando el peso se quede corto, excéntrica de 3 s antes que cambiar de mancuerna.",
+ salto:"No progresa por fatiga: progresa por altura o velocidad. Siempre lejos del fallo.",
+ sent:"Gimnasio: doble progresión por kilos. Casa: repeticiones hasta el tope, luego pausa de 2 s abajo.",
+ pallof:"Progresa alejándote del anclaje, no con más repeticiones.",
+ gemelo:"Pausa de 1 s abajo y 1 s arriba. Rango completo siempre.",
+ nordico:"En casa progresa reduciendo la asistencia de la banda.",
+ bisagra:"Casa: la carga la pone la palanca. Progresa de B-stance a una pierna pura.",
+ hip:"Pausa de 1 s arriba. En casa, unilateral con una sola mancuerna.",
+ plancha:"Progresa por segundos hasta 45, luego eleva los pies.",
+ step:"Sube solo con la pierna de arriba. Baja en 3 s.",
+ face:"Aquí no buscas carga: buscas repeticiones limpias con rotación externa al final.",
+ circ:"Dos rondas seguidas, 30 s entre ejercicios. Una tercera ronda solo si te sobran 4 min.",
+ cond:"Intensidad de 7 sobre 10 en el tramo fuerte. No debe dejarte molido."
+};
+
+/* Cada día tiene la misma plantilla en las dos versiones: mismo bloque, mismo patrón. */
 const PLAN_GYM = [MOB_BLK,
-{id:"d1", kind:"day", tag:"Lunes", title:"Pierna A · rodilla", items:[
-  {n:"Snatch", s:"5 × 2", n_:5, rest:120, kg:K(35,37.5,40,42.5,30)},
-  {n:"Sentadilla frontal", s:"4 × 5", n_:4, rest:180, kg:K(50,55,57.5,60,40)},
-  {n:"Sentadilla búlgara", s:"3 × 10 / pierna", n_:3, rest:120, kg:K(12,12,14,14,10), par:true},
-  {n:"Peso muerto rumano con mancuernas", s:"3 × 10", n_:3, rest:120, kg:K(16,18,18,20,12), par:true},
-  {n:"Elevación de gemelo con mancuerna", s:"3 × 15", n_:3, rest:75, kg:K(20,22,24,24,16)},
-  {n:"Hollow hold", s:"3 × 30–45 s", n_:3, rest:60, kg:K("30 s","35 s","40 s","45 s","30 s")}
+{id:"g1", kind:"day", tag:"Día 1", title:"Torso A · horizontal y dorsal", items:[
+  {b:"1",  n:"Press banca con barra", rng:R(4,6), n_:4, rest:135, rir:"2", prog:PROG.press},
+  {b:"2A", n:"Dominada o jalón al pecho", rng:R(6,10), n_:3, rest:45, ss:"A", rir:"1-2", prog:PROG.dom},
+  {b:"2B", n:"Press inclinado 30° con mancuernas", rng:R(8,12), n_:3, rest:60, ss:"A", rir:"1-2", par:true, prog:PROG.incl},
+  {b:"3A", n:"Remo con mancuerna con apoyo", rng:R(8,12), n_:3, rest:45, ss:"B", rir:"1-2", lado:true, prog:PROG.press},
+  {b:"3B", n:"Elevación lateral con mancuernas", rng:R(12,20), n_:3, rest:60, ss:"B", rir:"0-1", par:true, prog:PROG.lat},
+  {b:"4A", n:"Curl con barra", rng:R(10,15), n_:2, rest:45, ss:"C", rir:"0-1", prog:PROG.tempo},
+  {b:"4B", n:"Extensión de tríceps sobre cabeza", rng:R(10,15), n_:2, rest:45, ss:"C", rir:"0-1", prog:PROG.tempo}
 ]},
-{id:"d2", kind:"day", tag:"Martes", title:"Torso horizontal", items:[
-  {n:"Press banca", s:"4 × 5", n_:4, rest:180, kg:K(45,47.5,50,52.5,35)},
-  {n:"Remo con mancuerna con apoyo", s:"4 × 10 / lado", n_:4, rest:120, kg:K(22,24,26,26,18)},
-  {n:"Fondos en anillas o paralelas", s:"3 × 8", n_:3, rest:120, kg:K("peso corporal","peso corporal","+5 kg","+7,5 kg","peso corporal")},
-  {n:"Remo invertido en barra baja", s:"3 × 10", n_:3, rest:90, kg:K("peso corporal","peso corporal","pies elevados","pies elevados","peso corporal")},
-  {n:"Aperturas en polea o contractor", s:"3 × 15", n_:3, rest:60, kg:K(10,10,12,12,8)},
-  {n:"Curl con barra", s:"3 × 10", n_:3, rest:90, kg:K(20,22.5,22.5,25,15)},
-  {n:"Extensión de tríceps sobre cabeza", s:"3 × 10", n_:3, rest:90, kg:K(14,16,16,18,10)},
-  {n:"Paseo del granjero con kettlebells", s:"3 × 40 m", n_:3, rest:90, kg:K(24,24,28,28,20), par:true}
+{id:"g2", kind:"day", tag:"Día 2", title:"Pierna A · rodilla y potencia", items:[
+  {b:"0",  n:"Box jump", rng:R(3,3), n_:3, rest:60, rir:"sin fatiga", explos:true, prog:PROG.salto},
+  {b:"1",  n:"Sentadilla frontal", rng:R(4,6), n_:4, rest:135, rir:"2", prog:PROG.sent},
+  {b:"2A", n:"Zancada inversa con mancuernas", rng:R(8,12), n_:3, rest:45, ss:"A", rir:"1-2", lado:true, par:true, prog:PROG.step},
+  {b:"2B", n:"Pallof press con polea o goma", rng:R(8,12), n_:3, rest:50, ss:"A", rir:"1-2", lado:true, prog:PROG.pallof},
+  {b:"3A", n:"Elevación de gemelo con mancuerna", rng:R(12,20), n_:3, rest:40, ss:"B", rir:"0-1", prog:PROG.gemelo},
+  {b:"3B", n:"Curl femoral tumbado", rng:R(10,15), n_:3, rest:40, ss:"B", rir:"1-2", prog:PROG.press}
 ]},
-{id:"d3", kind:"day", tag:"Jueves", title:"Pierna B · cadera", items:[
-  {n:"Clean & jerk", s:"5 × (1+1)", n_:5, rest:150, kg:K(50,55,57.5,60,40)},
-  {n:"Rack pull desde la rodilla", s:"4 × 5", n_:4, rest:180, kg:K(70,80,85,90,55)},
-  {n:"Hip thrust con barra", s:"3 × 10", n_:3, rest:120, kg:K(50,60,65,70,40)},
-  {n:"Peso muerto a una pierna con kettlebell", s:"3 × 10 / pierna", n_:3, rest:75, kg:K(16,16,20,20,12)},
-  {n:"Curl nórdico asistido", s:"3 × 6", n_:3, rest:120, kg:K("peso corporal","peso corporal","peso corporal","peso corporal","peso corporal")},
-  {n:"Pallof press con banda", s:"3 × 12 / lado", n_:3, rest:60, kg:K("banda","banda","banda media","banda media","banda")},
-  {n:"Prensa de piernas", s:"3 × 12", n_:3, rest:120, kg:K(100,110,120,130,80), opt:true},
-  {n:"Curl femoral tumbado", s:"3 × 12", n_:3, rest:90, kg:K(30,32,36,40,25), opt:true}
+{id:"g3", kind:"day", tag:"Día 3", title:"Torso B · espalda y hombro", items:[
+  {b:"1",  n:"Dominadas lastradas", rng:R(4,6), n_:4, rest:135, rir:"2", prog:PROG.dom},
+  {b:"2A", n:"Press militar estricto", rng:R(6,8), n_:3, rest:45, ss:"A", rir:"1-2", prog:PROG.press},
+  {b:"2B", n:"Remo con mancuerna con apoyo", rng:R(8,12), n_:3, rest:50, ss:"A", rir:"1-2", lado:true, prog:PROG.press},
+  {b:"3A", n:"Press inclinado con mancuernas", rng:R(8,12), n_:3, rest:45, ss:"B", rir:"1-2", par:true, prog:PROG.incl},
+  {b:"3B", n:"Elevaciones laterales", rng:R(12,20), n_:3, rest:50, ss:"B", rir:"0-1", par:true, prog:PROG.lat},
+  {b:"4",  n:"Circuito: face pull → curl martillo → tríceps", rng:R(12,15), n_:2, rest:45, circ:3, rir:"0-1", prog:PROG.circ}
 ]},
-{id:"d4", kind:"day", tag:"Viernes", title:"Torso vertical", items:[
-  {n:"Press militar estricto", s:"4 × 5", n_:4, rest:180, kg:K(27.5,30,32.5,35,20)},
-  {n:"Dominadas lastradas", s:"4 × 8", n_:4, rest:150, kg:K("peso corporal","+2,5 kg","+5 kg","+7,5 kg","peso corporal")},
-  {n:"HSPU estrictas", s:"3 × 6", n_:3, rest:120, kg:K("peso corporal","peso corporal","con déficit","con déficit","peso corporal")},
-  {n:"Press inclinado con mancuernas", s:"3 × 10", n_:3, rest:120, kg:K(16,18,18,20,12), par:true},
-  {n:"Pull-over con mancuerna", s:"3 × 12", n_:3, rest:90, kg:K(20,22,24,26,16)},
-  {n:"Elevaciones laterales", s:"3 × 15", n_:3, rest:60, kg:K(6,6,8,8,5), par:true},
-  {n:"Face pull con goma", s:"3 × 15", n_:3, rest:60, kg:K("goma","goma","goma media","goma media","goma")},
-  {n:"Jalón al pecho", s:"3 × 12", n_:3, rest:90, kg:K(45,50,50,55,35), opt:true}
+{id:"g4", kind:"day", tag:"Día 4", title:"Pierna B · cadera y core", items:[
+  {b:"1",  n:"Peso muerto con barra hexagonal", rng:R(5,8), n_:4, rest:135, rir:"2", prog:PROG.bisagra},
+  {b:"2A", n:"Hip thrust con barra", rng:R(8,12), n_:3, rest:45, ss:"A", rir:"1-2", prog:PROG.hip},
+  {b:"2B", n:"Plancha lateral con rodillas flexionadas", rng:R(30,40), n_:3, rest:45, ss:"A", rir:"1-2", seg:true, lado:true, prog:PROG.plancha},
+  {b:"3A", n:"Step-up al banco", rng:R(8,12), n_:3, rest:35, ss:"B", rir:"1-2", lado:true, par:true, prog:PROG.step},
+  {b:"3B", n:"Face pull con goma", rng:R(12,20), n_:3, rest:35, ss:"B", rir:"0-1", prog:PROG.face},
+  {b:"FIN",n:"Acondicionamiento · bici, remo o SkiErg", rng:R(6,6), n_:1, rest:0, cond:true, rir:"7/10", prog:PROG.cond}
 ]}
 ];
 
 const PLAN_HOME = [MOB_BLK,
-{id:"h1", kind:"day", tag:"Lunes", title:"Pierna A · rodilla", items:[
-  {n:"Snatch con mancuerna", s:"5 × 3 / brazo", n_:5, rest:120, kg:K(16,18,20,22,12)},
-  {n:"Sentadilla goblet con mancuerna", s:"4 × 8", n_:4, rest:180, kg:K(24,26,28,32,20)},
-  {n:"Sentadilla búlgara", s:"3 × 10 / pierna", n_:3, rest:120, kg:K(20,22,24,26,16), par:true},
-  {n:"Peso muerto rumano con mancuernas", s:"3 × 10", n_:3, rest:120, kg:K(22,24,26,28,18), par:true},
-  {n:"Elevación de gemelo a una pierna", s:"3 × 15 / pierna", n_:3, rest:75, kg:K(20,22,24,26,16)},
-  {n:"Hollow hold", s:"3 × 30–45 s", n_:3, rest:60, kg:K("30 s","35 s","40 s","45 s","30 s")}
+{id:"c1", kind:"day", tag:"Día 1", title:"Torso A · horizontal y dorsal", items:[
+  {b:"1",  n:"Fondos en anillas", rng:R(6,10), n_:4, rest:135, rir:"2", prog:PROG.press},
+  {b:"2A", n:"Dominadas", rng:R(6,10), n_:3, rest:45, ss:"A", rir:"1-2", prog:PROG.domC},
+  {b:"2B", n:"Press inclinado 30° con mancuernas", rng:R(10,12), n_:3, rest:60, ss:"A", rir:"1-2", par:true, prog:PROG.incl},
+  {b:"3A", n:"Remo invertido en anillas", rng:R(10,12), n_:3, rest:45, ss:"B", rir:"1-2", prog:PROG.remoC},
+  {b:"3B", n:"Elevación lateral con mancuernas", rng:R(15,20), n_:3, rest:60, ss:"B", rir:"0-1", par:true, prog:PROG.lat},
+  {b:"4A", n:"Curl con mancuernas", rng:R(10,15), n_:2, rest:45, ss:"C", rir:"0-1", par:true, prog:PROG.tempo},
+  {b:"4B", n:"Extensión de tríceps sobre cabeza", rng:R(10,15), n_:2, rest:45, ss:"C", rir:"0-1", prog:PROG.tempo}
 ]},
-{id:"h2", kind:"day", tag:"Martes", title:"Torso horizontal", items:[
-  {n:"Press banca con mancuernas", s:"4 × 8", n_:4, rest:180, kg:K(20,22,24,26,16), par:true},
-  {n:"Remo con mancuerna con apoyo", s:"4 × 10 / lado", n_:4, rest:120, kg:K(24,26,28,30,20)},
-  {n:"Fondos en anillas", s:"3 × 8", n_:3, rest:120, kg:K("peso corporal","peso corporal","+5 kg","+7,5 kg","peso corporal")},
-  {n:"Remo invertido en anillas", s:"3 × 10", n_:3, rest:90, kg:K("peso corporal","peso corporal","pies elevados","pies elevados","peso corporal")},
-  {n:"Aperturas con mancuernas", s:"3 × 15", n_:3, rest:60, kg:K(10,10,12,12,8), par:true},
-  {n:"Curl con mancuernas", s:"3 × 10", n_:3, rest:90, kg:K(12,14,14,16,10), par:true},
-  {n:"Extensión de tríceps sobre cabeza", s:"3 × 10", n_:3, rest:90, kg:K(16,18,18,20,12)},
-  {n:"Paseo del granjero con mancuernas", s:"3 × 40 m", n_:3, rest:90, kg:K(28,30,32,32,24), par:true}
+{id:"c2", kind:"day", tag:"Día 2", title:"Pierna A · rodilla y potencia", items:[
+  {b:"0",  n:"Squat jump", rng:R(3,3), n_:3, rest:60, rir:"sin fatiga", explos:true, prog:PROG.salto},
+  {b:"1",  n:"Sentadilla búlgara", rng:R(8,12), n_:3, rest:135, rir:"2", lado:true, par:true, prog:PROG.sent},
+  {b:"2A", n:"Zancada inversa con mancuernas", rng:R(8,12), n_:3, rest:45, ss:"A", rir:"1-2", lado:true, par:true, prog:PROG.step},
+  {b:"2B", n:"Pallof press con banda", rng:R(8,12), n_:3, rest:50, ss:"A", rir:"1-2", lado:true, prog:PROG.pallof},
+  {b:"3A", n:"Elevación de gemelo a una pierna", rng:R(12,18), n_:3, rest:40, ss:"B", rir:"0-1", lado:true, prog:PROG.gemelo},
+  {b:"3B", n:"Curl nórdico con los pies bajo el banco", rng:R(6,10), n_:3, rest:40, ss:"B", rir:"1-2", prog:PROG.nordico}
 ]},
-{id:"h3", kind:"day", tag:"Jueves", title:"Pierna B · cadera", items:[
-  {n:"Clean y press con mancuernas", s:"5 × 3", n_:5, rest:150, kg:K(16,18,20,22,12), par:true},
-  {n:"Peso muerto rumano pesado con mancuernas", s:"4 × 8", n_:4, rest:180, kg:K(26,28,30,32,20), par:true},
-  {n:"Hip thrust a una pierna", s:"3 × 10 / pierna", n_:3, rest:120, kg:K(20,24,28,32,16)},
-  {n:"Peso muerto rumano a una pierna", s:"3 × 10 / pierna", n_:3, rest:75, kg:K(16,18,20,22,12)},
-  {n:"Curl nórdico con los pies bajo el banco", s:"3 × 6", n_:3, rest:120, kg:K("peso corporal","peso corporal","peso corporal","peso corporal","peso corporal")},
-  {n:"Pallof press con banda", s:"3 × 12 / lado", n_:3, rest:60, kg:K("banda","banda","banda media","banda media","banda")},
-  {n:"Zancada inversa con mancuernas", s:"3 × 10 / pierna", n_:3, rest:120, kg:K(16,18,20,22,12), par:true, opt:true},
-  {n:"Puente de glúteo con banda", s:"3 × 15", n_:3, rest:75, kg:K("banda","banda","banda","banda","banda"), opt:true}
+{id:"c3", kind:"day", tag:"Día 3", title:"Torso B · espalda y hombro", items:[
+  {b:"1",  n:"Dominadas", rng:R(6,10), n_:4, rest:135, rir:"2", prog:PROG.domC},
+  {b:"2A", n:"Press militar sentado con mancuernas", rng:R(8,10), n_:3, rest:45, ss:"A", rir:"1-2", par:true, prog:PROG.press},
+  {b:"2B", n:"Remo invertido en anillas", rng:R(10,12), n_:3, rest:50, ss:"A", rir:"1-2", prog:PROG.remoC},
+  {b:"3A", n:"Press inclinado con mancuernas", rng:R(10,12), n_:3, rest:45, ss:"B", rir:"1-2", par:true, prog:PROG.incl},
+  {b:"3B", n:"Elevaciones laterales", rng:R(15,20), n_:3, rest:50, ss:"B", rir:"0-1", par:true, prog:PROG.lat},
+  {b:"4",  n:"Circuito: face pull → curl martillo → fondos", rng:R(12,15), n_:2, rest:45, circ:3, rir:"0-1", prog:PROG.circ}
 ]},
-{id:"h4", kind:"day", tag:"Viernes", title:"Torso vertical", items:[
-  {n:"Press militar sentado con mancuernas", s:"4 × 8", n_:4, rest:180, kg:K(16,18,20,22,12), par:true},
-  {n:"Dominadas", s:"4 × 8", n_:4, rest:150, kg:K("peso corporal","+2,5 kg","+5 kg","+7,5 kg","peso corporal")},
-  {n:"HSPU contra la pared", s:"3 × 6", n_:3, rest:120, kg:K("peso corporal","peso corporal","con déficit","con déficit","peso corporal")},
-  {n:"Press inclinado con mancuernas", s:"3 × 10", n_:3, rest:120, kg:K(16,18,18,20,12), par:true},
-  {n:"Pull-over con mancuerna", s:"3 × 12", n_:3, rest:90, kg:K(20,22,24,26,16)},
-  {n:"Elevaciones laterales", s:"3 × 15", n_:3, rest:60, kg:K(8,8,10,10,6), par:true},
-  {n:"Face pull con banda", s:"3 × 15", n_:3, rest:60, kg:K("banda","banda","banda media","banda media","banda")},
-  {n:"Step-up al banco", s:"3 × 10 / pierna", n_:3, rest:90, kg:K(14,16,16,18,12), par:true, opt:true}
+{id:"c4", kind:"day", tag:"Día 4", title:"Pierna B · cadera y core", items:[
+  {b:"1",  n:"Peso muerto rumano a una pierna", rng:R(8,10), n_:3, rest:135, rir:"2", lado:true, prog:PROG.bisagra},
+  {b:"2A", n:"Hip thrust a una pierna", rng:R(10,12), n_:3, rest:45, ss:"A", rir:"1-2", lado:true, prog:PROG.hip},
+  {b:"2B", n:"Plancha lateral con rodillas flexionadas", rng:R(30,45), n_:3, rest:40, ss:"A", rir:"1-2", seg:true, lado:true, prog:PROG.plancha},
+  {b:"3A", n:"Step-up al banco", rng:R(8,12), n_:3, rest:30, ss:"B", rir:"1-2", lado:true, par:true, prog:PROG.step},
+  {b:"3B", n:"Face pull con banda", rng:R(15,20), n_:3, rest:30, ss:"B", rir:"0-1", prog:PROG.face},
+  {b:"FIN",n:"Acondicionamiento · step-ups rápidos o shadow boxing", rng:R(6,6), n_:1, rest:0, cond:true, rir:"7/10", prog:PROG.cond}
 ]}
+];
+
+const SEMANAS = [
+ {t:"S1", rir:"RIR 2–3", nota:"Semana de calibración. Extremo bajo de cada rango, y anota lo que mueves de verdad. Debes salir con la sensación de que podrías haber hecho más."},
+ {t:"S2", rir:"RIR 1–2", nota:"Empieza la doble progresión: una repetición más que la vez anterior en al menos una serie."},
+ {t:"S3", rir:"RIR 1–2", nota:"Sigue subiendo repeticiones. A estas alturas la mayoría de ejercicios debería haber subido carga una vez."},
+ {t:"S4", rir:"RIR 1", nota:"Semana de máximo rendimiento del bloque. La última serie de los accesorios puede llegar a RIR 0."},
+ {t:"S5", rir:"RIR 4–5", nota:"Descarga: una serie menos por ejercicio y 70–80 % de la carga habitual. Mantén la técnica y todos los patrones.", deload:true}
 ];
 
 let PLACE = "gym";
 let PLAN = PLAN_GYM;
 const PLACENOTE = {
-  gym: "Gimnasio · barra, kettlebell, rig y alguna máquina.",
-  home: "Casa · mismos días y mismo orden que en el gimnasio, con tu material: mancuernas hasta 32 kg, banco reclinable, anillas, barra de dominadas y banda. Cambia la herramienta, no el patrón."
+  gym: "Gimnasio · barra, mancuernas, poleas y máquinas.",
+  home: "Casa · mancuernas hasta 16 kg, banco regulable, anillas, barra de dominadas, bandas y barra ligera. La carga la ponen el tempo, la palanca y la unilateralidad, no los kilos."
 };
 function setPlace(p){
   if(p === PLACE) return;
   PLACE = p; PLAN = (p === "home") ? PLAN_HOME : PLAN_GYM;
-  saveState(); buildPlaces(); build(); renderAdjLog();
-  if(V.on) closeVoice();
+  saveState(); buildPlaces(); build(); renderLog();
 }
 function buildPlaces(){
-  const w = document.getElementById("places");
-  w.innerHTML = "";
+  const w = document.getElementById("places"); w.innerHTML = "";
   [["gym","Gimnasio"],["home","Casa"]].forEach(([id,lab])=>{
     const b = document.createElement("button");
     b.className = "wk" + (PLACE===id ? " on" : "");
-    b.textContent = lab;
-    b.onclick = ()=>setPlace(id);
+    b.textContent = lab; b.onclick = ()=>setPlace(id);
     w.appendChild(b);
   });
   document.getElementById("placenote").textContent = PLACENOTE[PLACE];
 }
 
-const WKNOTE = [
- "Semana 1 · calibración. Deja 3 repeticiones en reserva y quédate con ganas. Olímpicos desde hang.",
- "Semana 2 · sube. Deja 2 en reserva. Olímpicos todavía desde hang.",
- "Semana 3 · ya desde el suelo en los olímpicos. Deja 1–2 en reserva.",
- "Semana 4 · la más dura del bloque. Récord del bloque, sin buscar máximos.",
- "Semana 5 · descarga. Mitad de series, peso ligero. Sales con ganas, no reventado."
-];
-
 /* ================= estado ================= */
 let WEEK = 0;
-const S = {};   // clave -> series hechas
-const ADJ = {}; // clave -> ajuste en kg
+const S = {};    // series completadas
+const W = {};    // carga que anotas tú (texto libre: kilos, "PC", "banda"...)
+const REPS = {}; // repeticiones que estás haciendo, dentro del rango
 const key = (b,i) => b + ":" + i;
 
-/* ================= persistencia (en la propia URL) ================= */
+/* ================= persistencia ================= */
 let LOADING = false;
-const LSKEY = "entreno.v1";
+const LSKEY = "entreno.v3";
 function snapshot(){
-  const st = {w:WEEK, p:PLACE, s:{}, a:{}, v:VPREF};
+  const st = {w:WEEK, p:PLACE, s:{}, c:{}, r:{}};
   Object.keys(S).forEach(k=>{ if(S[k]) st.s[k]=S[k]; });
-  Object.keys(ADJ).forEach(k=>{ if(ADJ[k]) st.a[k]=ADJ[k]; });
+  Object.keys(W).forEach(k=>{ if(W[k]) st.c[k]=W[k]; });
+  Object.keys(REPS).forEach(k=>{ if(REPS[k]) st.r[k]=REPS[k]; });
   return st;
 }
 function saveState(){
   if(LOADING) return;
   const txt = JSON.stringify(snapshot());
-  // 1) en la propia dirección: así el enlace lleva tu estado
   try{ history.replaceState(null, "", "#" + encodeURIComponent(txt)); }catch(e){}
-  // 2) en el navegador: para cuando la página va dentro de un visor y la URL no se toca
   try{ localStorage.setItem(LSKEY, txt); }catch(e){}
 }
 function applyState(st){
   if(!st) return false;
   if(typeof st.w === "number") WEEK = st.w;
   if(st.p === "home" || st.p === "gym"){ PLACE = st.p; PLAN = (PLACE==="home") ? PLAN_HOME : PLAN_GYM; }
-  if(st.v) VPREF = Object.assign(VPREF, st.v);
-  Object.assign(S, st.s || {});
-  Object.assign(ADJ, st.a || {});
+  Object.assign(S, st.s || {}); Object.assign(W, st.c || {}); Object.assign(REPS, st.r || {});
   return true;
 }
 function loadState(){
   if(location.hash && location.hash.length > 2){
     try{ if(applyState(JSON.parse(decodeURIComponent(location.hash.slice(1))))) return; }catch(e){}
   }
-  try{
-    const raw = localStorage.getItem(LSKEY);
-    if(raw) applyState(JSON.parse(raw));
-  }catch(e){}
+  try{ const raw = localStorage.getItem(LSKEY); if(raw) applyState(JSON.parse(raw)); }catch(e){}
 }
 
 /* ================= utilidades ================= */
@@ -1343,23 +1426,55 @@ function nice(v){
   if(typeof v !== "number") return v;
   return (Math.round(v*100)/100).toString().replace(".", ",");
 }
-function kgLabel(it){
-  if(!it.kg) return "";
-  let v = it.kg[WEEK];
-  if(typeof v !== "number") return v;
-  v += (ADJ[it._k] || 0);
-  return (it.par ? "2 × " : "") + nice(v) + " kg";
+function mmss(t){ t = Math.max(0, Math.round(t)); return Math.floor(t/60)+":"+String(t%60).padStart(2,"0"); }
+function series(it){
+  if(!it.rng) return it.n_;
+  return Math.max(1, it.n_ - (SEMANAS[WEEK].deload && !it.explos && !it.cond ? 1 : 0));
 }
-function mmss(t){
-  t = Math.max(0, Math.round(t));
-  return Math.floor(t/60) + ":" + String(t%60).padStart(2,"0");
+function repsDe(it){ return REPS[it._k] || (it.rng ? it.rng[0] : 1); }
+function textoSeries(it){
+  if(it.s) return it.s;
+  if(it.cond) return "6 rondas · 30 s fuerte / 30 s suave";
+  const u = it.seg ? " s" : "";
+  const cola = it.lado ? " / lado" : "";
+  const r = REPS[it._k] ? String(repsDe(it)) : (it.rng[0]===it.rng[1] ? String(it.rng[0]) : it.rng[0]+"–"+it.rng[1]);
+  return series(it) + " × " + r + u + cola;
+}
+function pesoTxt(it){ return W[it._k] || ""; }
+
+/* ================= duración ================= */
+const TEMPO = 3.5, MONTAJE = 12, CALENT = 270;
+function segundosSerie(it){
+  if(it.cond) return 0;
+  if(!it.rng){ const m = String(it.s).match(/(\d+)\s*s/); return (m?+m[1]:30) + MONTAJE; }
+  const r = REPS[it._k] || (it.rng[0]+it.rng[1])/2;
+  let t = it.seg ? r : (it.explos ? r*2 : r*TEMPO);
+  if(it.lado) t *= 2;
+  if(it.circ) t *= it.circ;
+  return t + MONTAJE * (it.circ || 1);
+}
+function duracionBloque(blk){
+  if(blk.kind === "mob") return 0;
+  const act = blk.items.filter(it=>!it.opt);
+  let tot = CALENT;
+  act.forEach((it,i)=>{
+    if(it.cond){ tot += 360; return; }
+    const n = series(it);
+    tot += n * segundosSerie(it);
+    let d = it.rest + (it.circ ? 30*(it.circ-1) : 0);
+    tot += (i < act.length-1 ? n : n-1) * d;
+  });
+  return tot;
+}
+function textoDuracion(blk){
+  if(blk.kind === "mob") return "";
+  return "≈ " + Math.round(duracionBloque(blk)/60) + " min";
 }
 
 /* ================= dibujo ================= */
 function framesFor(name){
   const d = drawFor(name);
-  const box = document.createElement("div");
-  box.className = "frames";
+  const box = document.createElement("div"); box.className = "frames";
   if(!d) return box;
   d.poses.forEach((p,k)=>{
     if(k>0){ const a=document.createElement("span"); a.className="arrowsep"; a.textContent="›"; box.appendChild(a); }
@@ -1374,125 +1489,150 @@ function framesFor(name){
 
 /* ================= construcción ================= */
 function build(){
-  const app = document.getElementById("app");
-  app.innerHTML = "";
+  const app = document.getElementById("app"); app.innerHTML = "";
   PLAN.forEach(blk=>{
     const B = document.createElement("div");
-    B.className = "blk" + (blk.kind==="mob" ? " mobb" : "");
-    B.id = "blk-" + blk.id;
-
+    B.className = "blk" + (blk.kind==="mob" ? " mobb" : ""); B.id = "blk-" + blk.id;
     const h = document.createElement("div"); h.className="bh";
-    h.innerHTML = `<span class="tag">${blk.tag}</span><h2>${blk.title}</h2>
-      <span class="prog" id="pg-${blk.id}"></span>`;
+    h.innerHTML = '<span class="tag">'+blk.tag+'</span><h2>'+blk.title+'</h2>'
+      + (textoDuracion(blk) ? '<span class="dur">'+textoDuracion(blk)+'</span>' : "")
+      + '<span class="prog" id="pg-'+blk.id+'"></span>';
     B.appendChild(h);
     const pb=document.createElement("div"); pb.className="pbar";
-    pb.innerHTML = `<div class="pfill" id="pf-${blk.id}"></div>`;
-    B.appendChild(pb);
+    pb.innerHTML = '<div class="pfill" id="pf-'+blk.id+'"></div>'; B.appendChild(pb);
 
     blk.items.forEach((it,i)=>{
       it._k = key(blk.id, i);
-      const row = document.createElement("div");
-      row.className = "row"; row.id = "row-" + it._k;
-
+      const row = document.createElement("div"); row.className="row"; row.id="row-"+it._k;
       const chk = document.createElement("button");
-      chk.className = "chk"; chk.id = "chk-" + it._k;
-      chk.onclick = () => tapSet(blk, it);
+      chk.className="chk"; chk.id="chk-"+it._k; chk.onclick = ()=>tapSet(blk, it);
       row.appendChild(chk);
-
-      const main = document.createElement("button");
-      main.className = "rmain";
-      main.onclick = () => togglePanel(it._k);
+      const main = document.createElement("button"); main.className="rmain";
+      main.onclick = ()=>togglePanel(it._k);
       const txt = document.createElement("div"); txt.className="rtxt";
-      txt.innerHTML = `<span class="rname">${it.n}${it.opt?' <span style="color:var(--muted);font-weight:500">· opcional</span>':''}</span>
-        <span class="rsub">${it.s}</span>`;
+      txt.innerHTML = '<span class="rname">' + (it.b ? '<b class="bq">'+it.b+'</b> ' : "") + it.n + '</span>'
+        + '<span class="rsub" id="sub-'+it._k+'"></span>';
       main.appendChild(txt);
-      if(it.kg){ const k=document.createElement("span"); k.className="rkg"; k.id="kg-"+it._k; main.appendChild(k); }
+      const k=document.createElement("span"); k.className="rkg"; k.id="kg-"+it._k; main.appendChild(k);
       const c=document.createElement("span"); c.className="caret"; c.textContent="›"; main.appendChild(c);
-      row.appendChild(main);
-      B.appendChild(row);
-
-      const pan = document.createElement("div");
-      pan.className = "pan"; pan.id = "pan-" + it._k;
+      row.appendChild(main); B.appendChild(row);
+      const pan = document.createElement("div"); pan.className="pan"; pan.id="pan-"+it._k;
       B.appendChild(pan);
     });
-
     app.appendChild(B);
   });
   refresh();
 }
 
-function fillPanel(it, blk){
+function subTexto(it){
+  const ss = it.ss ? ' · <b style="color:var(--accent)">superserie '+it.ss+'</b>' : (it.circ ? ' · <b style="color:var(--accent)">circuito</b>' : "");
+  const rir = (it.cond || !it.rir) ? "" : ' · RIR ' + (SEMANAS[WEEK].deload ? "4–5" : it.rir);
+  return textoSeries(it) + rir + ss;
+}
+
+function fillPanel(it){
   const pan = document.getElementById("pan-"+it._k);
   if(pan.dataset.filled) return;
   pan.dataset.filled = "1";
   pan.appendChild(framesFor(it.n));
   const d = drawFor(it.n);
-  if(d){
-    const ul=document.createElement("ul");
+  if(d){ const ul=document.createElement("ul");
     d.cues.forEach(t=>{ const li=document.createElement("li"); li.innerHTML=t; ul.appendChild(li); });
-    pan.appendChild(ul);
+    pan.appendChild(ul); }
+  if(it.prog){
+    const nota = document.createElement("p"); nota.className="notaprog";
+    nota.innerHTML = "<b>Progresión.</b> " + it.prog;
+    pan.appendChild(nota);
   }
+
   const act=document.createElement("div"); act.className="panact";
   if(it.rest){
     const b=document.createElement("button"); b.className="mini go";
     b.textContent = "Descanso " + mmss(it.rest);
-    b.onclick = ()=>{ setT(it.rest); startT(); };
+    b.onclick = ()=>{ setT(it.rest); startT(it.n); };
     act.appendChild(b);
   }
-  if(it.kg && typeof it.kg[WEEK] === "number"){
-    const step = it.kg[0] < 15 ? 1 : 2.5;
-    const adj=document.createElement("span"); adj.className="adj";
-    const minus=document.createElement("button"); minus.textContent="−";
-    const lab=document.createElement("span"); lab.textContent="ajustar kg";
-    const plus=document.createElement("button"); plus.textContent="+";
-    minus.onclick=()=>bump(it,-step); plus.onclick=()=>bump(it,step);
-    adj.appendChild(minus); adj.appendChild(lab); adj.appendChild(plus);
-    act.appendChild(adj);
-    const orig=document.createElement("span"); orig.className="origtag"; orig.id="orig-"+it._k;
-    act.appendChild(orig);
+  if(it.rng && !it.cond && !it.explos){
+    // repeticiones dentro del rango
+    const ar = document.createElement("span"); ar.className="adj adjreps";
+    const m1=document.createElement("button"); m1.type="button"; m1.textContent="−";
+    const ri=document.createElement("input"); ri.type="text"; ri.inputMode="numeric";
+    ri.className="kginput"; ri.id="rep-"+it._k; ri.value = repsDe(it);
+    const u1=document.createElement("span"); u1.className="adjunit";
+    u1.textContent = (it.seg ? "seg" : "reps") + (it.rng[0]===it.rng[1] ? "" : " · meta " + it.rng[1]);
+    const p1=document.createElement("button"); p1.type="button"; p1.textContent="+";
+    const setR = v => { const n=Math.max(1,Math.min(120,Math.round(v)));
+      REPS[it._k] = (n===it.rng[0] ? 0 : n); refrescarSinSaltar(it); };
+    m1.onclick=()=>setR(repsDe(it)-1); p1.onclick=()=>setR(repsDe(it)+1);
+    const apR=()=>{ const v=parseInt(String(ri.value).replace(/\D/g,""),10);
+      if(!isNaN(v)) setR(v); else ri.value = repsDe(it); };
+    ri.addEventListener("change",apR); ri.addEventListener("blur",apR);
+    ri.addEventListener("focus",()=>ri.select());
+    ri.addEventListener("keydown",e=>{ if(e.key==="Enter"){e.preventDefault(); ri.blur();} });
+    ar.appendChild(m1); ar.appendChild(ri); ar.appendChild(u1); ar.appendChild(p1);
+    act.appendChild(ar);
+
+    // carga: la anotas tú, en texto libre
+    const ac = document.createElement("span"); ac.className="adj adjkg";
+    const m2=document.createElement("button"); m2.type="button"; m2.textContent="−";
+    const ci=document.createElement("input"); ci.type="text"; ci.inputMode="decimal";
+    ci.className="kginput wide"; ci.id="inp-"+it._k; ci.value = pesoTxt(it);
+    ci.placeholder = "anota";
+    const u2=document.createElement("span"); u2.className="adjunit";
+    u2.textContent = it.par ? "kg c/u" : "kg";
+    const p2=document.createElement("button"); p2.type="button"; p2.textContent="+";
+    const bump05 = d2 => {
+      const v = parseFloat(String(W[it._k]||"").replace(",", "."));
+      if(isNaN(v)) return;
+      W[it._k] = nice(Math.max(0, Math.round((v+d2)*2)/2));
+      refrescarSinSaltar(it);
+    };
+    m2.onclick=()=>bump05(-0.5); p2.onclick=()=>bump05(0.5);
+    const apC=()=>{ W[it._k] = ci.value.trim(); refrescarSinSaltar(it); };
+    ci.addEventListener("change",apC); ci.addEventListener("blur",apC);
+    ci.addEventListener("focus",()=>ci.select());
+    ci.addEventListener("keydown",e=>{ if(e.key==="Enter"){e.preventDefault(); ci.blur();} });
+    ac.appendChild(m2); ac.appendChild(ci); ac.appendChild(u2); ac.appendChild(p2);
+    act.appendChild(ac);
+
     const rst=document.createElement("button"); rst.className="mini";
-    rst.textContent="Peso original"; rst.onclick=()=>{ ADJ[it._k]=0; refresh(); saveState(); renderAdjLog(); };
+    rst.textContent="Reponer"; rst.onclick=()=>{ REPS[it._k]=0; W[it._k]=""; refrescarSinSaltar(it); };
     act.appendChild(rst);
   }
   pan.appendChild(act);
 }
-
 function togglePanel(k){
-  const pan = document.getElementById("pan-"+k);
-  const row = document.getElementById("row-"+k);
-  let it=null, blk=null;
-  PLAN.forEach(b=>b.items.forEach(x=>{ if(x._k===k){ it=x; blk=b; } }));
-  fillPanel(it, blk);
-  const open = pan.classList.toggle("open");
-  row.classList.toggle("open", open);
+  const pan = document.getElementById("pan-"+k), row = document.getElementById("row-"+k);
+  let it=null; PLAN.forEach(b=>b.items.forEach(x=>{ if(x._k===k) it=x; }));
+  fillPanel(it);
+  row.classList.toggle("open", pan.classList.toggle("open"));
 }
-
-function bump(it, d){
-  ADJ[it._k] = Math.round(((ADJ[it._k]||0) + d)*100)/100;
-  refresh(); saveState(); renderAdjLog();
+function refrescarSinSaltar(it){
+  const row = document.getElementById("row-"+it._k);
+  const antes = row ? row.getBoundingClientRect().top : null;
+  refresh(); saveState(); renderLog();
+  if(antes !== null){
+    const d = row.getBoundingClientRect().top - antes;
+    if(Math.abs(d) > 0.5) window.scrollBy(0, d);
+  }
 }
 
 /* ================= series ================= */
 function tapSet(blk, it){
-  const cur = S[it._k] || 0;
-  const next = cur >= it.n_ ? 0 : cur + 1;
-  S[it._k] = next;
-  refresh(); saveState();
-  if(next === it.n_){
-    buzz(18);
-    if(it.rest){ setT(it.rest); startT(it.n); }
-    goNext(blk, it);
-  } else if(next > 0){
-    buzz(12);
+  const tope = series(it), cur = S[it._k] || 0;
+  const next = cur >= tope ? 0 : cur + 1;
+  S[it._k] = next; refresh(); saveState();
+  if(next > 0){
+    buzz(next === tope ? 18 : 12);
     if(it.rest){ setT(it.rest); startT(it.n); }
   }
+  if(next === tope) goNext(blk, it);
 }
-
 function goNext(blk, it){
   const i = blk.items.indexOf(it);
   for(let j=i+1;j<blk.items.length;j++){
     const nx = blk.items[j];
-    if((S[nx._k]||0) < nx.n_){
+    if((S[nx._k]||0) < series(nx)){
       const row = document.getElementById("row-"+nx._k);
       document.querySelectorAll(".row.nextup").forEach(r=>r.classList.remove("nextup"));
       row.classList.add("nextup");
@@ -1502,98 +1642,104 @@ function goNext(blk, it){
   }
   document.querySelectorAll(".row.nextup").forEach(r=>r.classList.remove("nextup"));
 }
-
 function refresh(){
   PLAN.forEach(blk=>{
     let done=0;
     blk.items.forEach(it=>{
-      const c = S[it._k]||0;
-      const chk = document.getElementById("chk-"+it._k);
-      const row = document.getElementById("row-"+it._k);
-      chk.className = "chk" + (c>=it.n_ ? " full" : (c>0 ? " part" : ""));
-      chk.textContent = c>=it.n_ ? "✓" : (c>0 ? c+"/"+it.n_ : (it.n_>1 ? "0/"+it.n_ : ""));
-      row.classList.toggle("done", c>=it.n_);
-      if(c>=it.n_) done++;
-      const kgEl = document.getElementById("kg-"+it._k);
-      if(kgEl){
-        kgEl.textContent = kgLabel(it);
-        kgEl.classList.toggle("edited", !!ADJ[it._k]);
+      const tope = series(it), c = S[it._k]||0;
+      const chk = document.getElementById("chk-"+it._k), row = document.getElementById("row-"+it._k);
+      chk.className = "chk" + (c>=tope ? " full" : (c>0 ? " part" : ""));
+      chk.textContent = c>=tope ? "✓" : (c>0 ? c+"/"+tope : (tope>1 ? "0/"+tope : ""));
+      row.classList.toggle("done", c>=tope);
+      if(c>=tope) done++;
+      const sub = document.getElementById("sub-"+it._k);
+      if(sub) sub.innerHTML = subTexto(it);
+      const kg = document.getElementById("kg-"+it._k);
+      if(kg){
+        const p = pesoTxt(it);
+        kg.textContent = p ? (p + (/^[\d.,]+$/.test(p) ? (it.par ? " kg c/u" : " kg") : "")) : "anota";
+        kg.classList.toggle("vacio", !p);
       }
-    });
-    blk.items.forEach(it=>{
-      const o = document.getElementById("orig-"+it._k);
-      if(o) o.textContent = ADJ[it._k] ? ("original " + nice(it.kg[WEEK]) + " kg") : "";
+      const ri = document.getElementById("rep-"+it._k);
+      if(ri && document.activeElement !== ri) ri.value = repsDe(it);
+      const ci = document.getElementById("inp-"+it._k);
+      if(ci && document.activeElement !== ci) ci.value = pesoTxt(it);
     });
     document.getElementById("pg-"+blk.id).textContent = done + "/" + blk.items.length;
     document.getElementById("pf-"+blk.id).style.width = (100*done/blk.items.length) + "%";
+    const dur = blk.kind==="day" ? document.querySelector("#blk-"+CSS.escape(blk.id)+" .dur") : null;
+    if(dur) dur.textContent = textoDuracion(blk);
   });
 }
-
 function resetAll(){
-  Object.keys(S).forEach(k=>delete S[k]);
-  saveState();
+  Object.keys(S).forEach(k=>delete S[k]); saveState();
   document.querySelectorAll(".row.nextup").forEach(r=>r.classList.remove("nextup"));
   refresh();
 }
 
-/* ================= registro de ajustes ================= */
-function adjList(){
+/* ================= mis cargas ================= */
+function logList(){
   const out=[];
-  PLAN.forEach(b=>b.items.forEach(it=>{
-    if(ADJ[it._k] && it.kg) out.push({b:b, it:it, d:ADJ[it._k]});
-  }));
+  PLAN.forEach(b=>b.items.forEach(it=>{ if(W[it._k] || REPS[it._k]) out.push(it); }));
   return out;
 }
-function renderAdjLog(){
-  const host = document.getElementById("adjlog");
-  const L = adjList();
+function renderLog(){
+  const host = document.getElementById("adjlog"); const L = logList();
   if(!L.length){ host.innerHTML=""; host.style.display="none"; return; }
   host.style.display="block";
-  const rows = L.map(x=>{
-    const base = x.it.kg.map(v=>typeof v==="number" ? nice(v + x.d) : v).join(" · ");
-    return `<tr><td>${x.it.n}</td>
-      <td class="dlt">${nice(x.it.kg[WEEK])}</td>
-      <td class="nw">${nice(x.it.kg[WEEK]+x.d)} kg</td>
-      <td class="all">${base}</td></tr>`;
-  }).join("");
-  host.innerHTML = `<div class="blk"><div class="bh"><span class="tag">Calibración</span>
-      <h2>Mis ajustes de peso</h2><span class="prog">${L.length}</span></div>
-    <div style="padding:4px 16px 14px">
-      <p style="font-size:13px;color:var(--muted);margin:10px 0 4px">
-        Los cambios que haces se aplican a <b>las cinco semanas</b>, no solo a la actual: la progresión se recalcula sola desde tu peso real.</p>
-      <table class="adjt"><tr><th>Ejercicio</th><th>Antes</th><th>Ahora</th><th>S1 → S5</th></tr>${rows}</table>
-      <div class="panact"><button class="mini" onclick="copyLink()" id="lnkbtn">Copiar enlace con mis ajustes</button>
-      <button class="mini" onclick="clearAdj()">Borrar ajustes</button></div>
-    </div></div>`;
+  const rows = L.map(it=>'<tr><td>'+it.n+'</td><td class="nw">'+(W[it._k]||"—")+'</td>'
+    + '<td class="all">'+textoSeries(it)+'</td></tr>').join("");
+  host.innerHTML = '<div class="blk"><div class="bh"><span class="tag">'
+    + (PLACE==="home" ? "Casa" : "Gimnasio") + '</span><h2>Mis cargas</h2><span class="prog">'+L.length+'</span></div>'
+    + '<div style="padding:4px 16px 14px">'
+    + '<p style="font-size:13px;color:var(--muted);margin:10px 0 4px">Historial independiente para cada lugar: '
+    + 'lo que anotes en casa no toca lo del gimnasio, y al revés.</p>'
+    + '<table class="adjt"><tr><th>Ejercicio</th><th>Carga</th><th>Series × reps</th></tr>'+rows+'</table>'
+    + '<div class="panact"><button class="mini" onclick="copyLink()" id="lnkbtn">Copiar enlace con mis datos</button>'
+    + '<button class="mini" onclick="clearLog()">Borrar cargas</button></div></div></div>';
 }
-function clearAdj(){ Object.keys(ADJ).forEach(k=>delete ADJ[k]); refresh(); saveState(); renderAdjLog(); }
-function borrarTodo(){
-  Object.keys(S).forEach(k=>delete S[k]);
-  Object.keys(ADJ).forEach(k=>delete ADJ[k]);
-  try{ localStorage.removeItem(LSKEY); }catch(e){}
-  try{ history.replaceState(null, "", location.pathname); }catch(e){}
-  refresh(); renderAdjLog();
+function clearLog(){
+  PLAN.forEach(b=>b.items.forEach(it=>{ delete W[it._k]; delete REPS[it._k]; }));
+  refresh(); saveState(); renderLog();
 }
 function copyLink(){
-  saveState();
-  const btn=document.getElementById("lnkbtn");
+  saveState(); const btn=document.getElementById("lnkbtn");
   (navigator.clipboard ? navigator.clipboard.writeText(location.href) : Promise.reject())
-    .then(()=>{ btn.textContent="Enlace copiado"; setTimeout(()=>btn.textContent="Copiar enlace con mis ajustes",1800); })
+    .then(()=>{ btn.textContent="Enlace copiado"; setTimeout(()=>btn.textContent="Copiar enlace con mis datos",1800); })
     .catch(()=>{ btn.textContent="Copia la URL de la barra"; });
 }
 
 /* ================= semanas ================= */
 function buildWeeks(){
-  const w = document.getElementById("weeks");
-  w.innerHTML = "";
-  ["S1","S2","S3","S4","S5"].forEach((t,i)=>{
+  const w = document.getElementById("weeks"); w.innerHTML = "";
+  SEMANAS.forEach((s,i)=>{
     const b=document.createElement("button");
-    b.className = "wk" + (i===WEEK?" on":"") + (i===4?" dl":"");
-    b.textContent = i===4 ? "S5 descarga" : t;
-    b.onclick = ()=>{ WEEK=i; saveState(); buildWeeks(); document.querySelectorAll(".pan").forEach(p=>{p.innerHTML="";p.dataset.filled="";p.classList.remove("open")}); document.querySelectorAll(".row").forEach(r=>r.classList.remove("open")); refresh(); };
+    b.className = "wk" + (i===WEEK?" on":"") + (s.deload?" dl":"");
+    b.textContent = s.deload ? "S5 descarga" : s.t;
+    b.onclick = ()=>{ WEEK=i; saveState(); buildWeeks();
+      document.querySelectorAll(".pan").forEach(p=>{p.innerHTML="";p.dataset.filled="";p.classList.remove("open")});
+      document.querySelectorAll(".row").forEach(r=>r.classList.remove("open")); build(); };
     w.appendChild(b);
   });
-  document.getElementById("wkinfo").textContent = WKNOTE[WEEK];
+  document.getElementById("wkinfo").innerHTML = "<b>" + SEMANAS[WEEK].rir + ".</b> " + SEMANAS[WEEK].nota;
+}
+
+/* ================= resumen ================= */
+function copySummary(){
+  const L = ["Entreno · " + (PLACE==="home"?"casa":"gimnasio") + " · " + SEMANAS[WEEK].t];
+  PLAN.forEach(b=>{
+    if(!b.items.some(it=>S[it._k])) return;
+    L.push("", b.tag + " · " + b.title);
+    b.items.forEach(it=>{
+      const c = S[it._k]||0; if(!c) return;
+      L.push("  " + (c>=series(it)?"[x] ":"[ ] ") + it.n + " — " + c + "/" + series(it)
+        + " × " + repsDe(it) + (W[it._k] ? " · " + W[it._k] : ""));
+    });
+  });
+  const txt = L.join("\n"), btn = document.getElementById("cpbtn");
+  (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject())
+    .then(()=>{ btn.textContent="Copiado"; setTimeout(()=>btn.textContent="Copiar resumen",1600); })
+    .catch(()=>{ openOv('<h3>Resumen</h3><div class="out"><pre style="white-space:pre-wrap;margin:0;font-size:13px">'+txt.replace(/</g,"&lt;")+'</pre></div>'); });
 }
 
 /* ================= cronómetro ================= */
@@ -1625,20 +1771,58 @@ function startT(label){
     T = (TEND - Date.now())/1000;
     if(T<=0){ T=0; stopT(); ding(); buzz([90,70,90]); tlabel("¡Vamos!"); flashT(); }
     paintT();
-    if(V.on) vTick();
   }, 200);
   paintT(); wake();
 }
 function stopT(){ TRUN=false; clearInterval(TID); T=Math.max(0,Math.round(T)); paintT(); }
-let AC = null;
+let AC = null, BEEP = null, KEEP = null;
+
+/* Un WAV corto generado al vuelo. Safari en iPhone es mucho más fiable
+   reproduciendo un elemento <audio> que un oscilador de WebAudio. */
+function wavBeep(){
+  const sr = 44100, dur = 0.5, n = Math.floor(sr*dur);
+  const buf = new ArrayBuffer(44 + n*2), v = new DataView(buf);
+  const str = (o,t)=>{ for(let i=0;i<t.length;i++) v.setUint8(o+i, t.charCodeAt(i)); };
+  str(0,"RIFF"); v.setUint32(4, 36+n*2, true); str(8,"WAVEfmt ");
+  v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
+  v.setUint32(24,sr,true); v.setUint32(28,sr*2,true); v.setUint16(32,2,true);
+  v.setUint16(34,16,true); str(36,"data"); v.setUint32(40, n*2, true);
+  for(let i=0;i<n;i++){
+    const t = i/sr;
+    // tres pitidos: 784, 784, 1046 Hz
+    let a = 0;
+    [[0,784],[0.17,784],[0.34,1046]].forEach(([ini,f])=>{
+      const d = t - ini;
+      if(d >= 0 && d < 0.13) a += Math.sin(2*Math.PI*f*d) * Math.exp(-d*14);
+    });
+    v.setInt16(44 + i*2, Math.max(-1, Math.min(1, a)) * 32000, true);
+  }
+  let bin = ""; const b = new Uint8Array(buf);
+  for(let i=0;i<b.length;i++) bin += String.fromCharCode(b[i]);
+  return "data:audio/wav;base64," + btoa(bin);
+}
+
 function unlockAudio(){
   try{
     if(!AC) AC = new (window.AudioContext||window.webkitAudioContext)();
     if(AC.state === "suspended") AC.resume();
-    // tono mudo: iOS necesita un sonido dentro del gesto para habilitar el canal
     const o=AC.createOscillator(), g=AC.createGain();
     g.gain.value = 0.0001; o.connect(g); g.connect(AC.destination);
     o.start(); o.stop(AC.currentTime + 0.01);
+  }catch(e){}
+  // el <audio> hay que "tocarlo" dentro de un gesto para que iOS lo deje sonar luego
+  try{
+    if(!BEEP){
+      BEEP = new Audio(wavBeep());
+      BEEP.preload = "auto";
+      BEEP.setAttribute("playsinline","");
+      BEEP.load();
+    }
+    const v = BEEP.volume; BEEP.volume = 0;
+    const pr = BEEP.play();
+    if(pr && pr.then) pr.then(()=>{ BEEP.pause(); BEEP.currentTime = 0; BEEP.volume = v; })
+                        .catch(()=>{ BEEP.volume = v; });
+    else { BEEP.pause(); BEEP.currentTime = 0; BEEP.volume = v; }
   }catch(e){}
 }
 ["touchstart","mousedown"].forEach(ev =>
@@ -1646,6 +1830,14 @@ function unlockAudio(){
     document.removeEventListener(ev, once); }, {passive:true}));
 
 function ding(){
+  // 1) elemento de audio: lo más fiable en iPhone
+  try{
+    if(!BEEP){ BEEP = new Audio(wavBeep()); BEEP.setAttribute("playsinline",""); }
+    BEEP.currentTime = 0;
+    const pr = BEEP.play();
+    if(pr && pr.catch) pr.catch(()=>{});
+  }catch(e){}
+  // 2) y además el oscilador, por si el elemento falla
   try{
     if(!AC) AC = new (window.AudioContext||window.webkitAudioContext)();
     if(AC.state === "suspended") AC.resume();
@@ -1662,6 +1854,11 @@ function ding(){
   }catch(e){}
 }
 function buzz(p){ try{ navigator.vibrate && navigator.vibrate(p); }catch(e){} }
+function probarSonido(btn){
+  unlockAudio(); ding(); flashT();
+  const t = btn.textContent; btn.textContent = "✓";
+  setTimeout(()=>btn.textContent = t, 1200);
+}
 function flashT(){
   const bar = document.querySelector(".timer");
   let n = 0;
@@ -1775,435 +1972,6 @@ function flowToggle(){
 function flowNext(){ if(FI<FLOW.length-1){ stopFlow(); FI++; FT=0; renderFlow(); } }
 function flowPrev(){ if(FI>0){ stopFlow(); FI--; FT=0; renderFlow(); } }
 
-/* --- resumen --- */
-function copySummary(){
-  const L = ["Entreno · semana " + (WEEK+1)];
-  PLAN.forEach(b=>{
-    const done = b.items.filter(it=>(S[it._k]||0) >= it.n_);
-    if(!done.length && !b.items.some(it=>S[it._k])) return;
-    L.push("", b.tag + " · " + b.title);
-    b.items.forEach(it=>{
-      const c = S[it._k]||0; if(!c) return;
-      L.push("  " + (c>=it.n_?"[x] ":"[ ] ") + it.n + " — " + c + "/" + it.n_ + " series" +
-        (it.kg ? " · " + kgLabel(it) : ""));
-    });
-  });
-  const A = adjList();
-  if(A.length){
-    L.push("", "Ajustes de peso (aplican a las 5 semanas)");
-    A.forEach(x=>L.push("  " + x.it.n + ": " + (x.d>0?"+":"") + nice(x.d) + " kg → " +
-      x.it.kg.map(v=>typeof v==="number"?nice(v+x.d):v).join(" · ")));
-  }
-  const txt = L.join("\n");
-  const btn = document.getElementById("cpbtn");
-  (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject())
-    .then(()=>{ btn.textContent="Copiado"; setTimeout(()=>btn.textContent="Copiar resumen", 1600); })
-    .catch(()=>{ openOv('<h3>Resumen</h3><p class="h">Cópialo a mano.</p><div class="out"><pre style="white-space:pre-wrap;margin:0;font-size:13px">'+txt.replace(/</g,"&lt;")+'</pre></div>'); });
-}
-
-
-
-/* ================= modo voz ================= */
-const V = {on:false, blk:null, i:0, resting:false, said:{}, mic:false, rec:null};
-let VOICES = [], TTSREADY = false;
-
-function pickVoice(){
-  VOICES = window.speechSynthesis ? speechSynthesis.getVoices() : [];
-  return VOICES.find(v=>v.lang==="es-ES" && /Mónica|Monica|Marisol/i.test(v.name))
-      || VOICES.find(v=>v.lang==="es-ES")
-      || VOICES.find(v=>/^es/.test(v.lang)) || null;
-}
-if(window.speechSynthesis){
-  speechSynthesis.onvoiceschanged = pickVoice;
-  pickVoice();
-}
-const ORD = ["","primera","segunda","tercera","cuarta","quinta","sexta","séptima","octava"];
-const SPEAK_MAP = [
-  [/&/g, " y "], [/\s*\+\s*/g, ", y "],
-  [/\bHSPU\b/gi, "flexiones en vertical"],
-  [/\bclean\b/gi, "clin"], [/\bjerk\b/gi, "yerk"],
-  [/\bsnatch\b/gi, "snach"],
-  [/\brack pull\b/gi, "rak pul"],
-  [/\bhip thrust\b/gi, "jip trast"],
-  [/\bhollow hold\b/gi, "jólou jold"],
-  [/\bbird-?dog\b/gi, "berd dog"],
-  [/\bdead bug\b/gi, "ded bag"],
-  [/\bface pull\b/gi, "feis pul"],
-  [/\bgoblet\b/gi, "góblet"],
-  [/\bkettlebells?\b/gi, "kételbel"],
-  [/\bhang\b/gi, "jang"],
-  [/\bpeso corporal\b/gi, "tu propio peso"],
-  [/\bdéficit\b/gi, "déficit"],
-  [/90\s*\/\s*90/g, "noventa noventa"],
-  [/\s·\s/g, ", "],
-  [/\b(\d+)\s*min\b/g, (m,n) => num2es(+n) + " minutos"],
-  [/\bfigura 4\b/gi, "figura cuatro"],
-  [/\bstep-?up\b/gi, "step ap"],
-  [/\bpull-?over\b/gi, "pul óver"],
-  [/\bpallof\b/gi, "palof"],
-  [/\banillas\b/gi, "anillas"],
-  [/\s{2,}/g, " "]
-];
-function speakable(t){
-  SPEAK_MAP.forEach(([r,v]) => { t = t.replace(r, v); });
-  return t.replace(/\s+([,.])/g, "$1").trim();
-}
-let VPREF = {name:"", rate:1, pitch:1};
-function chosenVoice(){
-  if(VPREF.name){
-    const v = (VOICES.length ? VOICES : (window.speechSynthesis ? speechSynthesis.getVoices() : []))
-      .find(x=>x.name === VPREF.name);
-    if(v) return v;
-  }
-  return pickVoice();
-}
-function say(txt, now){
-  if(!window.speechSynthesis || !txt) return;
-  try{
-    if(now) speechSynthesis.cancel();
-    // troceo por frases: da respiración natural y evita el corte a media palabra
-    const partes = speakable(txt).split(/(?<=[.!?])\s+/).filter(x=>x.trim());
-    const v = chosenVoice();
-    partes.forEach(pz=>{
-      const u = new SpeechSynthesisUtterance(pz);
-      if(v) u.voice = v;
-      u.lang = (v && v.lang) || "es-ES";
-      u.rate = VPREF.rate; u.pitch = VPREF.pitch;
-      speechSynthesis.speak(u);
-    });
-  }catch(e){}
-}
-function unlockTTS(){
-  if(TTSREADY || !window.speechSynthesis) return;
-  try{
-    const u = new SpeechSynthesisUtterance(" ");
-    u.volume = 0; speechSynthesis.speak(u); TTSREADY = true;
-  }catch(e){}
-}
-["touchstart","mousedown"].forEach(ev =>
-  document.addEventListener(ev, function once(){ unlockTTS();
-    document.removeEventListener(ev, once); }, {passive:true}));
-
-/* --- texto hablado --- */
-
-/* --- números a palabras, para que no suene a máquina --- */
-const U = ["cero","uno","dos","tres","cuatro","cinco","seis","siete","ocho","nueve","diez",
- "once","doce","trece","catorce","quince","dieciséis","diecisiete","dieciocho","diecinueve","veinte",
- "veintiuno","veintidós","veintitrés","veinticuatro","veinticinco","veintiséis","veintisiete",
- "veintiocho","veintinueve"];
-const D = {30:"treinta",40:"cuarenta",50:"cincuenta",60:"sesenta",70:"setenta",80:"ochenta",90:"noventa"};
-const C = {100:"cien",200:"doscientos",300:"trescientos",400:"cuatrocientos",500:"quinientos"};
-function num2es(n){
-  n = Math.round(n);
-  if(n < 30) return U[n];
-  if(n < 100){ const d = Math.floor(n/10)*10, r = n%10;
-    return D[d] + (r ? " y " + U[r] : ""); }
-  if(n === 100) return "cien";
-  const c = Math.floor(n/100)*100, r = n%100;
-  const cs = C[c] || (num2es(c/100) + "cientos");
-  return cs + (r ? " " + num2es(r) : "");
-}
-function kilos(v){
-  const ent = Math.floor(v), fr = Math.round((v - ent)*100)/100;
-  if(fr === 0) return num2es(ent) + (ent === 1 ? " kilo" : " kilos");
-  if(fr === 0.5) return num2es(ent) + " kilos y medio";
-  if(fr === 0.25) return num2es(ent) + " kilos y cuarto";
-  return num2es(ent) + " coma " + num2es(Math.round(fr*10)) + " kilos";
-}
-
-function plainKg(it){
-  if(!it.kg) return "";
-  const v = it.kg[WEEK];
-  if(typeof v !== "number"){
-    const t = String(v);
-    if(/^\d+\s*s$/.test(t)) return "";                       // duración: ya va en las series
-    if(/peso corporal/i.test(t)) return "tu propio peso";
-    if(/pies elevados/i.test(t)) return "los pies elevados";
-    if(/déficit/i.test(t)) return "déficit bajo las manos";
-    if(/^goma$/i.test(t)) return "goma";
-    if(/^goma media$/i.test(t)) return "goma media";
-    const m = t.match(/^\+\s*([\d.,]+)\s*kg$/);
-    if(m) return kilos(parseFloat(m[1].replace(",", "."))) + " de lastre";
-    return t;
-  }
-  const t = v + (ADJ[it._k]||0);
-  return (it.par ? "dos mancuernas de " + kilos(t) + " cada una" : kilos(t));
-}
-function plainSets(it){
-  const s = it.s;
-  const m = s.match(/^(\d+)\s*×\s*(.+)$/);
-  if(!m) return s;
-  const n = +m[1];
-  let r = m[2].trim();
-  const series = num2es(n) + (n === 1 ? " serie" : " series");
-  if(/^\(1\+1\)$/.test(r)) return series + " de un clean y un jerk";
-  if(/m$/.test(r)) return num2es(n) + " recorridos de " + num2es(parseInt(r)) + " metros";
-  if(/s$/.test(r)){
-    const rr = r.replace(/\s*s$/,"").split(/[–-]/).map(x=>num2es(parseInt(x)));
-    return series + " aguantando " + (rr.length>1 ? "de " : "") + rr.join(" a ") + " segundos";
-  }
-  const reps = parseInt(r);
-  let cola = "";
-  if(/pierna/.test(r)) cola = " por pierna";
-  else if(/lado/.test(r)) cola = " por lado";
-  return series + " de " + num2es(reps) + (reps === 1 ? " repetición" : " repeticiones") + cola;
-}
-function introText(it){
-  if(it.voz) return it.voz;
-  let t = it.n + ", " + plainSets(it);
-  const k = plainKg(it);
-  if(k) t += ", con " + k;
-  return t + ".";
-}
-// versión corta, para "repetir" y para los avisos
-function shortText(it){
-  let t = it.n + ", " + plainSets(it);
-  const k = plainKg(it);
-  if(k) t += ", con " + k;
-  return t + ".";
-}
-
-/* --- apertura --- */
-function openVoice(){
-  unlockTTS(); unlockAudio();
-  const m = document.getElementById("vmode");
-  m.classList.add("on");
-  document.getElementById("vday").textContent = "Elige la sesión";
-  document.getElementById("vmic").style.display = "none";
-  document.getElementById("vbody").innerHTML =
-    '<p class="vname" style="font-size:26px">¿Qué toca hoy?</p>' +
-    '<p class="vnext">Te iré diciendo en voz alta el ejercicio, el peso y las series, y te cantaré el descanso. No hace falta que mires la pantalla.</p>';
-  const b = document.getElementById("vbtns");
-  b.className = "vpick";
-  b.innerHTML = PLAN.map((p,i)=>{
-    const done = p.items.filter(it=>(S[it._k]||0)>=it.n_).length;
-    return `<button onclick="startVoice(${i})">${p.tag} · ${p.title}
-      <span style="display:block;font-size:12.5px;color:var(--muted);font-weight:500;margin-top:2px">${done}/${p.items.length} hecho</span></button>`;
-  }).join("");
-  document.getElementById("vheard").textContent = "";
-  wake();
-}
-function closeVoice(){
-  V.on = false; stopMic();
-  try{ speechSynthesis.cancel(); }catch(e){}
-  document.getElementById("vmode").classList.remove("on");
-  document.getElementById("vbtns").className = "vbtns";
-}
-function startVoice(bi){
-  V.on = true; V.blk = PLAN[bi]; V.resting = false; V.said = {};
-  V.i = V.blk.items.findIndex(it => (S[it._k]||0) < it.n_);
-  if(V.i < 0) V.i = 0;
-  document.getElementById("vbtns").className = "vbtns";
-  document.getElementById("vmic").style.display = micSupported() ? "block" : "none";
-  const it = V.blk.items[V.i];
-  say(V.blk.tag + ", " + V.blk.title + ". " + (it.voz ? it.voz : "Empezamos con " + shortText(it)), true);
-  vRender();
-  wake();
-}
-
-/* --- pintado --- */
-function vRender(){
-  if(!V.on) return;
-  const it = V.blk.items[V.i], c = S[it._k]||0;
-  document.getElementById("vday").textContent = V.blk.tag + " · " + V.blk.title;
-  const body = document.getElementById("vbody");
-  const btns = document.getElementById("vbtns");
-
-  if(V.resting){
-    const nx = (c >= it.n_) ? nextItem() : it;
-    body.innerHTML = `<div class="vrest on">
-        <div class="vrlab">Descanso</div>
-        <div class="vclock" id="vclock">${mmss(T)}</div>
-        <p class="vnext">${ c>=it.n_
-          ? (nx ? "Después: <b>"+nx.n+"</b>"+(nx.kg?" · "+kgLabel(nx):"") : "Última del día")
-          : "Siguiente: serie "+(c+1)+" de "+it.n_+(it.kg?" · "+kgLabel(it):"") }</p>
-      </div>`;
-    btns.innerHTML = `
-      <button class="vgo rest" onclick="vSkipRest()">Saltar descanso</button>
-      <div class="vrow">
-        <button class="vsec" onclick="vAddTime(30)">+30 s</button>
-        <button class="vsec" onclick="vTechnique()">Técnica</button>
-      </div>`;
-  } else {
-    const dots = Array.from({length: it.n_},(_,k)=>
-      `<span class="vdot${k<c?" on":""}"></span>`).join("");
-    body.innerHTML = `
-      <div class="vpos">Ejercicio ${V.i+1} de ${V.blk.items.length}</div>
-      <div class="vname">${it.n}</div>
-      ${it.kg ? `<div class="vkg">${kgLabel(it)}</div>` : ""}
-      <div class="vsets">${it.s}</div>
-      <div class="vdots">${dots}</div>`;
-    btns.innerHTML = `
-      <button class="vgo" onclick="vDone()">Hecha la ${ORD[Math.min(c+1,it.n_)]||Math.min(c+1,it.n_)}</button>
-      <div class="vrow">
-        <button class="vsec" onclick="vTechnique()">Técnica</button>
-        <button class="vsec" onclick="vRepeat()">Repetir</button>
-        <button class="vsec" onclick="vNext()">Saltar</button>
-      </div>`;
-  }
-}
-
-function nextItem(){
-  for(let j=V.i+1;j<V.blk.items.length;j++) return V.blk.items[j];
-  return null;
-}
-
-/* --- acciones --- */
-function vDone(){
-  const it = V.blk.items[V.i];
-  const c = Math.min((S[it._k]||0) + 1, it.n_);
-  S[it._k] = c; refresh(); saveState(); buzz(20);
-  if(c >= it.n_){
-    const nx = nextItem();
-    if(it.rest && nx){
-      say("Ejercicio terminado. Descansa " + restWords(it.rest) + ". Después vamos con " + shortText(nx), true);
-      vStartRest(it.rest);
-    } else if(nx){
-      V.i++; say("Siguiente. " + introText(nx), true); vRender();
-    } else {
-      say("Sesión terminada. Buen trabajo.", true);
-      document.getElementById("vbody").innerHTML =
-        '<div class="vname">Sesión terminada</div><p class="vnext">Bien hecho. Acuérdate de la movilidad si aún no la has hecho.</p>';
-      document.getElementById("vbtns").innerHTML =
-        '<button class="vgo" onclick="openVoice()">Otra sesión</button>';
-    }
-  } else {
-    say("Hecha la " + (ORD[c]||num2es(c)) + " de " + num2es(it.n_) + ". Descansa " + restWords(it.rest) + ".", true);
-    vStartRest(it.rest);
-  }
-}
-function restWords(sec){
-  if(!sec) return "poco";
-  if(sec % 60 === 0) return sec===60 ? "un minuto" : num2es(sec/60) + " minutos";
-  if(sec < 60) return num2es(sec) + " segundos";
-  return num2es(Math.floor(sec/60)) + " minutos y " + num2es(sec%60) + " segundos";
-}
-function vStartRest(sec){
-  if(!sec){ vAfterRest(); return; }
-  V.resting = true; V.said = {};
-  setT(sec); startT(V.blk.items[V.i].n);
-  vRender();
-}
-function vTick(){
-  const cl = document.getElementById("vclock");
-  if(cl) cl.textContent = mmss(T);
-  const t = Math.round(T);
-  if(V.resting){
-    if(t === 30 && !V.said[30]){ V.said[30]=1; say("Treinta segundos."); }
-    if(t === 10 && !V.said[10]){ V.said[10]=1; say("Diez segundos, prepárate."); }
-    if(t <= 0 && !V.said[0]){ V.said[0]=1; vAfterRest(); }
-  }
-}
-function vAfterRest(){
-  V.resting = false;
-  const it = V.blk.items[V.i], c = S[it._k]||0;
-  if(c >= it.n_){
-    const nx = nextItem();
-    if(nx){ V.i++; say("Vamos. " + introText(nx), true); }
-  } else {
-    say("Vamos con la " + (ORD[c+1]||num2es(c+1)) + " de " + num2es(it.n_) + (plainKg(it) ? ", " + plainKg(it) : "") + ".", true);
-  }
-  vRender();
-}
-function vSkipRest(){ stopT(); V.said[0]=1; vAfterRest(); }
-function vAddTime(n){ T += n; TEND += n*1000; V.said={}; vRender(); paintT(); }
-function vRepeat(){ const it=V.blk.items[V.i]; say(it.voz ? it.voz : shortText(it), true); }
-function vNext(){
-  if(V.i < V.blk.items.length-1){ V.i++; V.resting=false; stopT();
-    say("Saltamos. " + introText(V.blk.items[V.i]), true); vRender(); }
-}
-function vTechnique(){
-  const it = V.blk.items[V.i], d = drawFor(it.n);
-  if(!d){ say("No tengo notas para este.", true); return; }
-  const txt = d.cues.slice(0,2).map(c=>c.replace(/<[^>]+>/g,"")).join(" ");
-  say(txt, true);
-}
-
-/* --- ajustes de voz --- */
-function esVoices(){
-  const all = (window.speechSynthesis ? speechSynthesis.getVoices() : []);
-  VOICES = all;
-  const es = all.filter(v=>/^es/i.test(v.lang));
-  return es.length ? es : all;
-}
-function openVoiceSettings(){
-  const list = esVoices();
-  const rows = list.length ? list.map(v=>{
-    const sel = (VPREF.name ? v.name===VPREF.name : v===pickVoice());
-    const cal = /premium|enhanced|siri/i.test(v.name) ? " · alta calidad" : "";
-    return `<button class="vopt${sel?" sel":""}" onclick="setVoice('${v.name.replace(/'/g,"\\'")}')">
-      <span>${v.name}<span style="display:block;font-size:11.5px;color:var(--muted)">${v.lang}${cal}</span></span>
-      <span class="vplay">Probar</span></button>`;
-  }).join("") : '<p class="h">Este navegador no expone ninguna voz. Prueba en Safari.</p>';
-  openOv(`<h3>Voz</h3>
-    <p class="h">Elige la que menos robótica te suene. Toca cualquiera para oírla.</p>
-    <div class="vopts">${rows}</div>
-    <div class="fld"><label>Velocidad</label>
-      <input id="vrate" type="range" min="0.7" max="1.3" step="0.05" value="${VPREF.rate}"></div>
-    <div class="fld"><label>Tono</label>
-      <input id="vpitch" type="range" min="0.7" max="1.3" step="0.05" value="${VPREF.pitch}"></div>
-    <button class="mini go" style="width:100%;padding:12px" onclick="testVoice()">Escuchar ejemplo</button>
-    <p class="h" style="margin-top:14px">Si todas suenan mecánicas, en el iPhone ve a
-      <b>Ajustes → Accesibilidad → Contenido hablado → Voces → Español</b> y descarga una voz
-      <b>Premium</b>. Mejora mucho, aunque Safari no siempre expone todas las instaladas.</p>`);
-  ["vrate","vpitch"].forEach(id=>{
-    const e = document.getElementById(id);
-    e.addEventListener("change", ()=>{
-      VPREF.rate = parseFloat(document.getElementById("vrate").value);
-      VPREF.pitch = parseFloat(document.getElementById("vpitch").value);
-      saveState(); testVoice();
-    });
-  });
-}
-function setVoice(n){
-  VPREF.name = n; saveState();
-  document.querySelectorAll(".vopt").forEach(b=>b.classList.remove("sel"));
-  if(event && event.currentTarget) event.currentTarget.classList.add("sel");
-  testVoice();
-}
-function testVoice(){
-  say("Sentadilla frontal, cuatro series de cinco repeticiones, con cincuenta kilos. Descansa tres minutos.", true);
-}
-
-/* --- micrófono (experimental) --- */
-function micSupported(){
-  return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
-}
-function toggleMic(){ V.mic ? stopMic() : startMic(); }
-function startMic(){
-  const R = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!R) return;
-  try{
-    V.rec = new R();
-    V.rec.lang = "es-ES"; V.rec.continuous = true; V.rec.interimResults = false;
-    V.rec.onresult = e => {
-      const t = e.results[e.results.length-1][0].transcript.toLowerCase().trim();
-      document.getElementById("vheard").textContent = "Oído: " + t;
-      vCommand(t);
-    };
-    V.rec.onerror = () => { document.getElementById("vheard").textContent =
-      "El micro ha fallado. Usa los botones."; stopMic(); };
-    V.rec.onend = () => { if(V.mic){ try{ V.rec.start(); }catch(e){} } };
-    V.rec.start();
-    V.mic = true;
-    document.getElementById("vmic").classList.add("on");
-    document.getElementById("vheard").textContent = "Escuchando: hecho · técnica · repite · siguiente";
-  }catch(e){ document.getElementById("vheard").textContent = "Este navegador no permite el micro."; }
-}
-function stopMic(){
-  V.mic = false;
-  try{ V.rec && V.rec.stop(); }catch(e){}
-  const b = document.getElementById("vmic"); if(b) b.classList.remove("on");
-}
-function vCommand(t){
-  if(/hecho|hecha|listo|lista|ya está|vale/.test(t)) return V.resting ? vSkipRest() : vDone();
-  if(/técnica|tecnica|cómo|como se hace/.test(t)) return vTechnique();
-  if(/repite|repetir|qué toca|que toca|cuánto|cuanto peso/.test(t)) return vRepeat();
-  if(/siguiente|salta|saltar/.test(t)) return vNext();
-  if(/más tiempo|mas tiempo|treinta más|espera/.test(t)) return vAddTime(30);
-  if(/salir|terminar|para/.test(t)) return closeVoice();
-}
-
 /* ================= css extra ================= */
 const st = document.createElement("style");
 st.textContent = `.row.nextup{background:var(--accent-soft)}
@@ -2216,7 +1984,7 @@ LOADING = true; loadState(); LOADING = false;
 buildPlaces();
 buildWeeks();
 build();
-renderAdjLog();
+renderLog();
 paintT();
 
 </script>
