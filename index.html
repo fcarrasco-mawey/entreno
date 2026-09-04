@@ -11,9 +11,7 @@
 <meta name="theme-color" content="#faf9f7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#131211" media="(prefers-color-scheme: dark)">
 <meta name="format-detection" content="telephone=no">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%231c1b19'/%3E%3Cg stroke='%23f4ece3' stroke-width='11' stroke-linecap='round'%3E%3Cline x1='40' y1='90' x2='140' y2='90'/%3E%3Cline x1='52' y1='66' x2='52' y2='114'/%3E%3Cline x1='128' y1='66' x2='128' y2='114'/%3E%3C/g%3E%3Cg stroke='%23d29a63' stroke-width='11' stroke-linecap='round'%3E%3Cline x1='36' y1='74' x2='36' y2='106'/%3E%3Cline x1='144' y1='74' x2='144' y2='106'/%3E%3C/g%3E%3C/svg%3E">
 <style>
   :root{
     --bg:#faf9f7; --surface:#ffffff; --ink:#1c1b19; --muted:#6b6862;
@@ -174,6 +172,19 @@
   .notaprog{font-size:13px;color:var(--muted);margin:10px 0 0;padding:9px 12px;
     background:var(--surface);border-radius:9px;border:1px solid var(--line)}
   .adj input.kginput.wide{width:78px}
+  .rkg.sugerido{box-shadow:inset 0 0 0 1.5px var(--accent)}
+  .prop{margin-top:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);
+        border-left:3px solid var(--accent);border-radius:0 10px 10px 0}
+  .propt{margin:0;font-size:13.5px;line-height:1.5}
+  .hist{margin:6px 0 0;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .sens{margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .senst{width:100%;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:2px}
+  .sensb{flex:1;min-width:92px;border:1px solid var(--line);background:var(--bg);border-radius:10px;
+         padding:11px 8px;font-size:13px;font-weight:650}
+  .sensb:active{transform:scale(.97)}
+  .sensb.s-facil{border-color:var(--done);color:var(--done)}
+  .sensb.s-fallo{border-color:var(--warn);color:var(--warn)}
+  .deshacer{margin-top:10px;font-size:12px;color:var(--muted)}
   .adjt{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
   .adjt th{text-align:left;font-size:10px;letter-spacing:.07em;text-transform:uppercase;
            color:var(--muted);font-weight:700;padding:6px 6px;border-bottom:1px solid var(--line)}
@@ -268,9 +279,10 @@
   cronómetro arranca con el descanso de ese ejercicio. Toca el nombre para ver el dibujo, las claves
   técnicas y la nota de progresión. Ahí mismo anotas <b>tu carga</b> y ajustas las <b>repeticiones</b>
   dentro del rango.<br><br>
-  <b>Los pesos los pones tú.</b> No hay kilos predeterminados: el programa te da el rango de repeticiones
-  y el RIR, y tú anotas lo que mueves de verdad. Gimnasio y casa llevan historiales separados que no se
-  mezclan ni se convierten uno en otro.<br><br>
+  <b>Los pesos.</b> La primera vez de cada ejercicio los pones tú: el peso con el que hagas el extremo
+  bajo del rango dejándote 2 repeticiones en reserva. A partir de ahí, al terminar el ejercicio pulsas
+  <b>«sobró margen», «justo» o «no llegué»</b> y la app calcula sola el peso y las repeticiones de la
+  próxima vez, aplicando doble progresión. Gimnasio y casa llevan historiales separados.<br><br>
   <b>Doble progresión.</b> Sube repeticiones dentro del rango hasta tocar el tope en todas las series.
   Ahí subes carga y vuelves al extremo bajo. En casa, cuando 16 kg se queden cortos, la progresión pasa
   a tempo, pausas, unilateralidad, rango y dificultad mecánica, en ese orden.<br><br>
@@ -1384,21 +1396,28 @@ function buildPlaces(){
   document.getElementById("placenote").textContent = PLACENOTE[PLACE];
 }
 
+/* ---- cuánto sube cada ejercicio cuando toca subir ---- */
+const INC = {"Press banca con barra": 2.5, "Press militar estricto": 2.5, "Curl con barra": 2.5, "Sentadilla frontal": 5, "Peso muerto con barra hexagonal": 5, "Hip thrust con barra": 5, "Curl femoral tumbado": 5, "Dominadas lastradas": 2.5, "Dominada o jalón al pecho": 2.5, "Fondos en anillas": 2.5, "Dominadas": 2.5, "Press inclinado 30° con mancuernas": 2, "Press inclinado con mancuernas": 2, "Remo con mancuerna con apoyo": 2, "Zancada inversa con mancuernas": 2, "Elevación de gemelo con mancuerna": 2, "Press militar sentado con mancuernas": 2, "Curl con mancuernas": 2, "Extensión de tríceps sobre cabeza": 2, "Step-up al banco": 2, "Sentadilla búlgara": 2, "Peso muerto rumano a una pierna": 2, "Hip thrust a una pierna": 2, "Elevación de gemelo a una pierna": 2, "Elevación lateral con mancuernas": 1, "Elevaciones laterales": 1};
+const TOPE_CASA = 16;  // kg máximos por mancuerna en casa
+
 /* ================= estado ================= */
 let WEEK = 0;
 const S = {};    // series completadas
 const W = {};    // carga que anotas tú (texto libre: kilos, "PC", "banda"...)
 const REPS = {}; // repeticiones que estás haciendo, dentro del rango
+const LOG = {};  // historial: [{w:peso, r:reps, f:sensación}]
 const key = (b,i) => b + ":" + i;
 
 /* ================= persistencia ================= */
 let LOADING = false;
 const LSKEY = "entreno.v3";
 function snapshot(){
-  const st = {w:WEEK, p:PLACE, s:{}, c:{}, r:{}};
+  const st = {w:WEEK, p:PLACE, s:{}, c:{}, r:{}, l:{}};
   Object.keys(S).forEach(k=>{ if(S[k]) st.s[k]=S[k]; });
   Object.keys(W).forEach(k=>{ if(W[k]) st.c[k]=W[k]; });
   Object.keys(REPS).forEach(k=>{ if(REPS[k]) st.r[k]=REPS[k]; });
+  st.l = {};
+  Object.keys(LOG).forEach(k=>{ if(LOG[k] && LOG[k].length) st.l[k]=LOG[k].slice(-6); });
   return st;
 }
 function saveState(){
@@ -1412,6 +1431,7 @@ function applyState(st){
   if(typeof st.w === "number") WEEK = st.w;
   if(st.p === "home" || st.p === "gym"){ PLACE = st.p; PLAN = (PLACE==="home") ? PLAN_HOME : PLAN_GYM; }
   Object.assign(S, st.s || {}); Object.assign(W, st.c || {}); Object.assign(REPS, st.r || {});
+  Object.assign(LOG, st.l || {});
   return true;
 }
 function loadState(){
@@ -1469,6 +1489,71 @@ function duracionBloque(blk){
 function textoDuracion(blk){
   if(blk.kind === "mob") return "";
   return "≈ " + Math.round(duracionBloque(blk)/60) + " min";
+}
+
+
+/* ================= motor de progresión =================
+   Doble progresión pura. No hay nada inteligente aquí y no hace falta:
+   son tres reglas que dependen de lo que hiciste la última vez. */
+function incremento(it){ return INC[it.n] || 2.5; }
+function esNumero(v){ return v !== "" && v != null && !isNaN(parseFloat(String(v).replace(",", "."))); }
+function num(v){ return parseFloat(String(v).replace(",", ".")); }
+function topeMancuerna(it){ return (PLACE === "home" && it.par !== undefined) ? TOPE_CASA : null; }
+
+/* Devuelve qué toca hoy a partir de la última sesión registrada. */
+function propuesta(it){
+  const h = LOG[it._k] || [];
+  if(!h.length) return null;
+  const u = h[h.length-1];
+  const inc = incremento(it), lo = it.rng[0], hi = it.rng[1];
+  if(!esNumero(u.w)){
+    // en casa muchas veces no hay kilos: la progresión es de otro tipo
+    if(u.f === "facil") return {w:u.w, r:Math.min(hi, u.r+1), txt:"Sube una repetición. Si ya estás en "+hi+", pasa a tempo o a una versión más difícil."};
+    if(u.f === "fallo") return {w:u.w, r:Math.max(lo, u.r-1), txt:"Baja una repetición y consolida antes de volver a subir."};
+    return {w:u.w, r:Math.min(hi, u.r+1), txt:"Mantén la variante y suma una repetición."};
+  }
+  const p = num(u.w);
+  if(u.f === "fallo"){
+    const nuevo = Math.max(0, Math.round((p*0.95)*2)/2);
+    return {w:nice(nuevo), r:lo, txt:"La última no salió: baja un 5 % y vuelve a construir desde "+lo+" repeticiones."};
+  }
+  if(u.f === "facil"){
+    const nuevo = p + inc;
+    const tope = topeMancuerna(it);
+    if(tope && nuevo > tope){
+      if(u.r >= hi) return {w:nice(p), r:hi, txt:"Tope de mancuerna y tope de repeticiones. Ya no se progresa con carga: pasa a excéntrica de 3–4 s, pausa abajo o versión unilateral."};
+      return {w:nice(p), r:Math.min(hi, u.r+2), txt:"Ya estás en el tope de mancuerna: sube repeticiones hasta " + hi + " antes de cambiar de herramienta."};
+    }
+    return {w:nice(nuevo), r:lo, txt:"Te sobró margen: sube "+nice(inc)+" kg y vuelve a "+lo+" repeticiones."};
+  }
+  // "justo": era la intensidad correcta
+  if(u.r >= hi){
+    const nuevo = p + inc;
+    const tope = topeMancuerna(it);
+    if(tope && nuevo > tope) return {w:nice(p), r:hi, txt:"Tope de mancuerna alcanzado con el rango completo. Toca tempo, pausa o unilateral."};
+    return {w:nice(nuevo), r:lo, txt:"Completaste el rango: sube "+nice(inc)+" kg y vuelve a "+lo+" repeticiones."};
+  }
+  return {w:nice(p), r:u.r+1, txt:"Mismo peso, una repetición más: "+(u.r+1)+"."};
+}
+
+/* Registrar cómo ha ido y aplicar la propuesta al momento. */
+function registrar(it, f){
+  if(!it.rng) return;
+  const h = LOG[it._k] || (LOG[it._k] = []);
+  h.push({w: pesoTxt(it), r: repsDe(it), f: f});
+  if(h.length > 6) h.splice(0, h.length-6);
+  const p = propuesta(it);
+  if(p){ W[it._k] = p.w; REPS[it._k] = (p.r === it.rng[0] ? 0 : p.r); }
+  const pan = document.getElementById("pan-"+it._k);
+  if(pan){ pan.innerHTML=""; pan.dataset.filled=""; fillPanel(it); pan.classList.add("open"); }
+  refrescarSinSaltar(it);
+}
+function borrarUltimo(it){
+  const h = LOG[it._k]; if(!h || !h.length) return;
+  h.pop();
+  const pan = document.getElementById("pan-"+it._k);
+  if(pan){ pan.innerHTML=""; pan.dataset.filled=""; fillPanel(it); pan.classList.add("open"); }
+  refrescarSinSaltar(it);
 }
 
 /* ================= dibujo ================= */
@@ -1600,6 +1685,34 @@ function fillPanel(it){
     act.appendChild(rst);
   }
   pan.appendChild(act);
+
+  if(it.rng && !it.cond && !it.explos){
+    const h = LOG[it._k] || [];
+    const caja = document.createElement("div"); caja.className = "prop";
+    if(!h.length){
+      caja.innerHTML = '<p class="propt"><b>Primera vez.</b> Anota el peso con el que hagas '
+        + it.rng[0] + ' repeticiones dejándote 2 en reserva. A partir de ahí, la app te va marcando el siguiente.</p>';
+    } else {
+      const u = h[h.length-1], p = propuesta(it);
+      caja.innerHTML = '<p class="propt"><b>Hoy: ' + (p.w || "—") + (esNumero(p.w) ? (it.par ? " kg cada una" : " kg") : "")
+        + ' × ' + p.r + '.</b> ' + p.txt + '</p>'
+        + '<p class="hist">Última vez: ' + (u.w || "—") + ' × ' + u.r
+        + ' · ' + ({facil:"sobró margen", justo:"justo", fallo:"no llegué"}[u.f] || u.f) + '</p>';
+    }
+    const q = document.createElement("div"); q.className = "sens";
+    q.innerHTML = '<span class="senst">Al terminar el ejercicio, ¿cómo ha ido?</span>';
+    [["facil","Sobró margen"],["justo","Justo"],["fallo","No llegué"]].forEach(([k,lab])=>{
+      const b=document.createElement("button"); b.className="sensb s-"+k; b.type="button";
+      b.textContent=lab; b.onclick=()=>registrar(it,k); q.appendChild(b);
+    });
+    caja.appendChild(q);
+    if(h.length){
+      const del=document.createElement("button"); del.className="mini deshacer";
+      del.textContent="Deshacer último registro"; del.onclick=()=>borrarUltimo(it);
+      caja.appendChild(del);
+    }
+    pan.appendChild(caja);
+  }
 }
 function togglePanel(k){
   const pan = document.getElementById("pan-"+k), row = document.getElementById("row-"+k);
@@ -1659,6 +1772,7 @@ function refresh(){
         const p = pesoTxt(it);
         kg.textContent = p ? (p + (/^[\d.,]+$/.test(p) ? (it.par ? " kg c/u" : " kg") : "")) : "anota";
         kg.classList.toggle("vacio", !p);
+        kg.classList.toggle("sugerido", !!(LOG[it._k] && LOG[it._k].length));
       }
       const ri = document.getElementById("rep-"+it._k);
       if(ri && document.activeElement !== ri) ri.value = repsDe(it);
@@ -1695,11 +1809,37 @@ function renderLog(){
     + '<p style="font-size:13px;color:var(--muted);margin:10px 0 4px">Historial independiente para cada lugar: '
     + 'lo que anotes en casa no toca lo del gimnasio, y al revés.</p>'
     + '<table class="adjt"><tr><th>Ejercicio</th><th>Carga</th><th>Series × reps</th></tr>'+rows+'</table>'
-    + '<div class="panact"><button class="mini" onclick="copyLink()" id="lnkbtn">Copiar enlace con mis datos</button>'
+    + '<div class="panact"><button class="mini go" onclick="copyHistorial()" id="histbtn">Copiar historial para revisión</button>'
+    + '<button class="mini" onclick="copyLink()" id="lnkbtn">Copiar enlace con mis datos</button>'
     + '<button class="mini" onclick="clearLog()">Borrar cargas</button></div></div></div>';
 }
+function copyHistorial(){
+  const L = ["Historial de entrenamiento · " + (PLACE==="home" ? "casa" : "gimnasio"),
+             "Programa: 4 días, 45 min. Semana actual: " + SEMANAS[WEEK].t, ""];
+  let hay = false;
+  PLAN.forEach(b=>{
+    if(b.kind !== "day") return;
+    const con = b.items.filter(it=>(LOG[it._k]||[]).length);
+    if(!con.length) return;
+    hay = true;
+    L.push(b.tag + " · " + b.title);
+    con.forEach(it=>{
+      const h = LOG[it._k];
+      const linea = h.map(e=>(e.w||"—") + "×" + e.r + " (" + ({facil:"sobró",justo:"justo",fallo:"no llegué"}[e.f]||e.f) + ")").join("  →  ");
+      L.push("  " + it.n + " [" + it.rng[0] + "–" + it.rng[1] + " reps]: " + linea);
+    });
+    L.push("");
+  });
+  if(!hay) L.push("Todavía no hay sesiones registradas.");
+  L.push("Dime si algo se ha estancado, si conviene cambiar algún ejercicio y cómo enfocar el bloque siguiente.");
+  const txt = L.join("\n"), btn = document.getElementById("histbtn");
+  (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject())
+    .then(()=>{ btn.textContent="Copiado"; setTimeout(()=>btn.textContent="Copiar historial para revisión",1800); })
+    .catch(()=>{ openOv('<h3>Historial</h3><p class="h">Cópialo y pégamelo para que lo revise.</p>'
+      + '<div class="out"><pre style="white-space:pre-wrap;margin:0;font-size:12px">'+txt.replace(/</g,"&lt;")+'</pre></div>'); });
+}
 function clearLog(){
-  PLAN.forEach(b=>b.items.forEach(it=>{ delete W[it._k]; delete REPS[it._k]; }));
+  PLAN.forEach(b=>b.items.forEach(it=>{ delete W[it._k]; delete REPS[it._k]; delete LOG[it._k]; }));
   refresh(); saveState(); renderLog();
 }
 function copyLink(){
