@@ -169,6 +169,52 @@
   .adjt .dlt{color:var(--muted);text-decoration:line-through}
   .adjt .nw{color:var(--accent);font-weight:700;white-space:nowrap}
   .adjt .all{color:var(--muted);font-size:12px}
+  /* ---- modo voz ---- */
+  .vmode{position:fixed;inset:0;z-index:80;background:var(--bg);display:none;
+         flex-direction:column;padding:calc(18px + env(safe-area-inset-top)) 18px
+         calc(18px + env(safe-area-inset-bottom))}
+  .vmode.on{display:flex}
+  .vtop{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .vtop .vday{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;flex:1}
+  .vx{border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:6px 11px;font-size:12.5px;font-weight:600}
+  .vmic{border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:6px 11px;font-size:12.5px;font-weight:600}
+  .vmic.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  @media (prefers-color-scheme: dark){ .vmic.on{color:#141210} }
+  .vbody{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:4px;min-height:0}
+  .vpos{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .vname{font-size:clamp(26px,8vw,42px);font-weight:700;line-height:1.05;letter-spacing:-.02em;margin:2px 0 6px}
+  .vkg{font-size:clamp(34px,12vw,60px);font-weight:800;color:var(--accent);line-height:1;font-variant-numeric:tabular-nums}
+  .vsets{font-size:17px;color:var(--muted);margin-top:8px;font-variant-numeric:tabular-nums}
+  .vdots{display:flex;gap:7px;justify-content:center;margin-top:14px}
+  .vdot{width:15px;height:15px;border-radius:50%;border:2px solid var(--line)}
+  .vdot.on{background:var(--done);border-color:var(--done)}
+  .vrest{display:none;text-align:center}
+  .vrest.on{display:block}
+  .vclock{font-size:clamp(64px,24vw,120px);font-weight:800;font-variant-numeric:tabular-nums;
+          line-height:1;letter-spacing:-.04em;color:var(--accent)}
+  .vrlab{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .vnext{font-size:14px;color:var(--muted);margin-top:16px;max-width:30ch}
+  .vbtns{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+  .vgo{border:none;background:var(--ink);color:var(--bg);border-radius:16px;padding:26px;
+       font-size:20px;font-weight:750;letter-spacing:-.01em}
+  .vgo:active{opacity:.85}
+  .vgo.rest{background:var(--done)}
+  .vrow{display:flex;gap:9px}
+  .vsec{flex:1;border:1px solid var(--line);background:var(--surface);border-radius:13px;
+        padding:15px;font-size:14.5px;font-weight:650}
+  .vsec:active{background:var(--panel)}
+  .vpick{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+  .vpick button{border:1px solid var(--line);background:var(--surface);border-radius:13px;
+                padding:17px;font-size:16px;font-weight:650;text-align:left}
+  .vopts{max-height:38vh;overflow:auto;margin:4px -4px 10px;padding:0 4px}
+  .vopt{display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;
+        border:1px solid var(--line);background:var(--bg);border-radius:11px;padding:11px 13px;
+        margin-bottom:7px;text-align:left;font-size:14px;font-weight:600}
+  .vopt.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+  .vplay{font-size:12px;font-weight:700;color:var(--accent);flex:none}
+  .fld input[type=range]{accent-color:var(--accent);padding:0}
+  .vheard{font-size:12.5px;color:var(--accent);min-height:18px;margin-top:8px}
+
   .foot{margin-top:30px;font-size:12px;color:var(--muted);line-height:1.6}
   .foot b{color:var(--ink)}
 </style>
@@ -182,6 +228,8 @@
   <p class="sub">Cuatro días · fuerza e hipertrofia sobre patrones de CrossFit</p>
 </header>
 
+<div class="bar" id="places"></div>
+<p class="wkinfo" id="placenote"></p>
 <div class="bar" id="weeks"></div>
 <p class="wkinfo" id="wkinfo"></p>
 
@@ -189,6 +237,8 @@
   <button class="tool" onclick="openPlates()">Calculadora de discos</button>
   <button class="tool" onclick="openRM()">Estimador de 1RM</button>
   <button class="tool" onclick="openFlow()">Movilidad guiada</button>
+  <button class="tool" onclick="openVoice()">Modo voz</button>
+  <button class="tool ghosty" onclick="openVoiceSettings()">Ajustes de voz</button>
   <button class="tool ghosty" onclick="copySummary()" id="cpbtn">Copiar resumen</button>
   <button class="tool ghosty" onclick="resetAll()">Reiniciar</button>
 </div>
@@ -199,7 +249,7 @@
 <p class="foot">
   <b>Cómo se usa.</b> Toca el círculo de la izquierda una vez por serie completada: al llenarse queda marcado y el cronómetro arranca solo con el descanso de ese ejercicio. Toca el nombre para ver el dibujo del movimiento y las claves técnicas. Los kilos se ajustan con − y + si la estimación no encaja.<br><br>
   <b>Los pesos son estimaciones</b> a partir de tus 70 kg en sentadilla y 50 en press banca. La primera semana es de calibración: si acabas la última serie con más de 3 repeticiones de sobra, sube; si no completas, baja.<br><br>
-  <b>Tus ajustes y series se guardan en la propia dirección de la página.</b> Si la recargas, siguen ahí. Guarda el enlace en favoritos —o pulsa «Copiar enlace con mis ajustes»— y tendrás tu calibración de la semana 1 disponible siempre que lo abras.<br><br>
+  <b>Tus ajustes y series se guardan solos</b>, en la dirección de la página y también en el propio navegador. Si la recargas, siguen ahí. Guarda el enlace en favoritos y tendrás tu calibración disponible siempre que lo abras.<br><br>
   <b>Lumbar.</b> Molestia muscular difusa al día siguiente es normal. Dolor punzante y localizado durante la serie, para. Dolor que baja por la pierna, para y consulta. Los 10 minutos de movilidad son diarios, entrenes o no.
 </p>
 
@@ -215,6 +265,18 @@
   </div>
   <button class="tbtn" id="tgo" onclick="toggleT()">Iniciar</button>
   <button class="tbtn sec" onclick="setT(0)">0</button>
+</div>
+
+<div class="vmode" id="vmode">
+  <div class="vtop">
+    <span class="vday" id="vday"></span>
+    <button class="vmic" id="vmic" onclick="toggleMic()" style="display:none">Micro</button>
+    <button class="vx" onclick="openVoiceSettings()">Voz</button>
+    <button class="vx" onclick="closeVoice()">Salir</button>
+  </div>
+  <div class="vbody" id="vbody"></div>
+  <div class="vbtns" id="vbtns"></div>
+  <div class="vheard" id="vheard" style="text-align:center"></div>
 </div>
 
 <div class="ov" id="ov" onclick="if(event.target===this)closeOv()">
@@ -905,25 +967,222 @@ const MQ = [
 
 
 /* ================= índice de dibujos ================= */
+/* ---------- dibujos propios de casa ---------- */
+const CASA_DRAW = [
+{name:"Snatch con mancuerna", tag:"Una mano",
+ cues:["El equivalente en casa del snatch con barra: mismo patrón de triple extensión, sin barra olímpica.",
+  "Mancuerna entre los pies, espalda recta. <b>Primer tirón lento</b>, y a la altura de la cadera, extensión agresiva.",
+  "Recibe con el brazo bloqueado sobre la cabeza y la mancuerna sobre la mitad del pie. No hace falta sentadilla profunda.",
+  "Con tu lumbar: <b>arranca desde la altura de la rodilla</b> las dos primeras semanas, igual que con barra."],
+ poses:[
+  {bg:[FLOOR(184)],head:[126,84],spine:[[116,96],[90,124]],
+   arms:[[[114,98],[112,130],[110,158]]],
+   legs:[[[90,124],[106,148],[96,180],[110,184]]],
+   eq:[{t:"db",at:[110,162]}]},
+  {bg:[FLOOR(184)],head:[110,54],spine:[[100,70],[98,116]],
+   arms:[[[100,72],[100,48],[100,26]]],
+   legs:[[[98,116],[100,150],[98,182],[112,184]]],
+   eq:[{t:"db",at:[100,24]}]}]},
+
+{name:"Clean y press con mancuernas", tag:"3 tiempos", labels:["Salida","Rack","Arriba"],
+ cues:["El equivalente en casa del clean & jerk. Dos mancuernas, del suelo al hombro y del hombro a arriba.",
+  "Del suelo al rack: extensión de cadera, codos rápidos. Las mancuernas acaban <b>apoyadas en los hombros</b>.",
+  "Del rack a arriba: press estricto, sin impulso de pierna. Aprieta glúteo y abdomen para no arquear la lumbar.",
+  "Igual que con barra: las dos primeras semanas arranca desde la rodilla, no desde el suelo."],
+ poses:[
+  {bg:[FLOOR(184)],head:[122,80],spine:[[113,94],[88,120]],
+   arms:[[[111,96],[109,128],[107,156]]],
+   legs:[[[88,120],[104,148],[96,180],[110,184]]],
+   eq:[{t:"db",at:[107,160]}]},
+  {bg:[FLOOR(184)],head:[102,44],spine:[[100,66],[100,112]],
+   arms:[[[100,70],[116,84],[106,70]]],
+   legs:[[[100,112],[100,150],[98,182],[112,184]]],
+   eq:[{t:"db",at:[108,68]}]},
+  {bg:[FLOOR(184)],head:[108,52],spine:[[100,70],[100,114]],
+   arms:[[[100,72],[100,50],[100,28]]],
+   legs:[[[100,114],[100,150],[98,182],[112,184]]],
+   eq:[{t:"db",at:[100,26]}]}]},
+
+{name:"Press banca con mancuernas", tag:"Banco horizontal",
+ cues:["Escápulas <b>retraídas y hundidas</b>, cinco puntos de apoyo. Igual que con barra.",
+  "Con mancuernas puedes bajar más que con barra: aprovecha ese rango, es la ventaja del material que tienes.",
+  "Arriba no las choques ni bloquees del todo: mantén la tensión en el pecho."],
+ poses:[
+  {bg:[{t:"bench",x:40,y:130,w:112,h:11}],
+   head:[54,116],spine:[[70,122],[124,126]],
+   arms:[[[70,122],[74,100],[78,80]]],
+   legs:[[[124,126],[150,142],[150,176],[164,180]]],
+   eq:[{t:"db",at:[78,78]}]},
+  {bg:[{t:"bench",x:40,y:130,w:112,h:11}],
+   head:[54,116],spine:[[70,122],[124,126]],
+   arms:[[[70,122],[56,112],[78,106]]],
+   legs:[[[124,126],[150,142],[150,176],[164,180]]],
+   eq:[{t:"db",at:[78,104]}]}]},
+
+{name:"Step-up al banco", tag:"Banco horizontal",
+ cues:["Pie entero sobre el banco. Sube empujando <b>solo con la pierna de arriba</b>: la de abajo no da impulso.",
+  "Baja en 3 segundos controlando. Ahí está la mitad del trabajo.",
+  "Banco a la altura de la rodilla o algo más. Cuanto más alto, más glúteo."],
+ poses:[
+  {bg:[{t:"bench",x:112,y:140,w:58,h:12},FLOOR(186)],
+   head:[100,62],spine:[[98,80],[96,128]],
+   arms:[[[104,84],[107,106],[108,128]]],
+   legs:[[[96,128],[124,132],[126,140],[140,142]],[[96,128],[92,158],[90,182],[78,186]]],
+   eq:[{t:"db",at:[108,132]}]},
+  {bg:[{t:"bench",x:112,y:140,w:58,h:12},FLOOR(186)],
+   head:[130,34],spine:[[128,52],[126,98]],
+   arms:[[[134,56],[137,78],[138,100]]],
+   legs:[[[126,98],[128,120],[130,140],[144,142]],[[126,98],[106,116],[94,132],[84,136]]],
+   eq:[{t:"db",at:[138,104]}]}]},
+
+{name:"Zancada inversa con mancuernas", tag:"Mancuernas",
+ cues:["Da el paso <b>hacia atrás</b>, no hacia delante: la rodilla delantera sufre menos y la cadera trabaja más.",
+  "Torso erguido. Baja vertical hasta que la rodilla de atrás casi toque el suelo.",
+  "Sube empujando con el talón de la pierna delantera."],
+ poses:[
+  {bg:[FLOOR(184)],head:[104,48],spine:[[100,66],[100,112]],
+   arms:[[[106,72],[109,94],[110,116]]],
+   legs:[[[100,112],[100,150],[98,182],[112,184]]],
+   eq:[{t:"db",at:[110,120]}]},
+  {bg:[FLOOR(184)],head:[104,72],spine:[[100,90],[98,130]],
+   arms:[[[106,94],[109,116],[110,138]]],
+   legs:[[[98,130],[124,144],[124,182],[138,184]],[[98,130],[80,166],[62,180],[74,184]]],
+   eq:[{t:"db",at:[110,142]}]}]},
+
+{name:"Hip thrust a una pierna", tag:"Banco y mancuerna",
+ cues:["Espalda alta en el borde del banco, mancuerna sobre la cadera. Una pierna apoyada, la otra <b>extendida en el aire</b>.",
+  "Sube empujando con el talón hasta que muslo y torso queden en línea. Aprieta el glúteo 1 s arriba.",
+  "A una pierna llegas a un estímulo alto con poco peso: perfecto cuando el material tiene tope.",
+  "Mirada al frente y barbilla metida: es lo que impide que arquees la lumbar para llegar más arriba."],
+ poses:[
+  {bg:[{t:"bench",x:28,y:118,w:70,h:11},FLOOR(186)],
+   head:[46,108],spine:[[62,114],[104,152]],
+   arms:[[[62,116],[46,132],[32,126]]],
+   legs:[[[104,152],[136,152],[138,182],[152,184]],[[104,152],[132,134],[160,118],[172,122]]],
+   eq:[{t:"db",at:[104,150]}]},
+  {bg:[{t:"bench",x:28,y:118,w:70,h:11},FLOOR(186)],
+   head:[46,108],spine:[[62,114],[106,126]],
+   arms:[[[62,116],[46,132],[32,126]]],
+   legs:[[[106,126],[138,140],[138,182],[152,184]],[[106,126],[134,110],[162,94],[174,98]]],
+   eq:[{t:"db",at:[106,124]}]}]},
+
+{name:"Press militar sentado con mancuernas", tag:"Banco a 80°",
+ cues:["Respaldo casi vertical: apoya la espalda y <b>te ahorras el arqueo lumbar</b> del press de pie. Con tu espalda, es la mejor opción en casa.",
+  "Baja hasta que la mancuerna quede a la altura de la oreja, codos algo por delante del cuerpo.",
+  "Aprieta glúteo y abdomen igualmente: no despegues la lumbar del respaldo."],
+ poses:[
+  {bg:[{t:"plate",from:[70,172],to:[88,84]},{t:"plate",from:[70,172],to:[114,174]},FLOOR(186)],
+   head:[96,70],spine:[[92,88],[80,140]],
+   arms:[[[94,92],[110,102],[102,86]]],
+   legs:[[[80,140],[114,152],[114,182],[128,186]]],
+   eq:[{t:"db",at:[102,84]}]},
+  {bg:[{t:"plate",from:[70,172],to:[88,84]},{t:"plate",from:[70,172],to:[114,174]},FLOOR(186)],
+   head:[96,70],spine:[[92,88],[80,140]],
+   arms:[[[94,92],[98,64],[100,40]]],
+   legs:[[[80,140],[114,152],[114,182],[128,186]]],
+   eq:[{t:"db",at:[100,38]}]}]},
+
+{name:"Aperturas con mancuernas", tag:"Banco a 30° · vista desde los pies",
+ cues:["Codo <b>ligeramente flexionado y fijo</b>. El movimiento sale del hombro, no del codo.",
+  "Baja hasta notar estiramiento en el pecho, sin pasarte: es el punto donde el hombro se queda vendido.",
+  "Sube juntando en arco, como si abrazaras un barril, y para antes de que se toquen."],
+ poses:[
+  {bg:[{t:"bench",x:86,y:44,w:28,h:104}],
+   head:[100,34],spine:[[100,54],[100,120]],
+   arms:[[[92,62],[68,68],[44,74]],[[108,62],[132,68],[156,74]]],
+   legs:[[[100,120],[90,146],[88,168],[80,172]],[[100,120],[110,146],[112,168],[120,172]]],
+   eq:[{t:"db",at:[40,74]},{t:"db",at:[160,74]}]},
+  {bg:[{t:"bench",x:86,y:44,w:28,h:104}],
+   head:[100,34],spine:[[100,54],[100,120]],
+   arms:[[[92,62],[78,44],[92,28]],[[108,62],[122,44],[108,28]]],
+   legs:[[[100,120],[90,146],[88,168],[80,172]],[[100,120],[110,146],[112,168],[120,172]]],
+   eq:[{t:"db",at:[88,26]},{t:"db",at:[112,26]}]}]},
+
+{name:"Pull-over con mancuerna", tag:"Banco horizontal",
+ cues:["Una mancuerna a dos manos. Brazos casi extendidos, codos algo doblados y <b>fijos</b>.",
+  "Baja por detrás de la cabeza hasta notar el estiramiento en dorsal y costillas. Ahí está el ejercicio.",
+  "Costillas abajo: si arqueas la lumbar para llegar más atrás, has perdido el estiramiento y ganado riesgo."],
+ poses:[
+  {bg:[{t:"bench",x:40,y:130,w:112,h:11}],
+   head:[54,116],spine:[[70,122],[124,126]],
+   arms:[[[70,122],[58,102],[44,86]]],
+   legs:[[[124,126],[150,142],[150,176],[164,180]]],
+   eq:[{t:"db",at:[42,84]}]},
+  {bg:[{t:"bench",x:40,y:130,w:112,h:11}],
+   head:[54,116],spine:[[70,122],[124,126]],
+   arms:[[[70,122],[70,98],[78,78]]],
+   legs:[[[124,126],[150,142],[150,176],[164,180]]],
+   eq:[{t:"db",at:[78,76]}]}]},
+
+{name:"Pallof press con banda", tag:"Banda elástica",
+ cues:["Banda anclada <b>a un lado</b>, a la altura del pecho. Manos juntas en el esternón.",
+  "Estira los brazos al frente y aguanta 2 s. La banda tira de ti hacia el lado: tu trabajo es <b>no girar</b>.",
+  "Aprieta glúteo y abdomen. Costillas abajo, cadera de frente.",
+  "Es antirrotación pura, de lo mejor que puedes hacer por una lumbar que se queja. Poco peso, mucho control."],
+ poses:[
+  {bg:[FLOOR(186)],head:[104,50],spine:[[100,68],[100,120]],
+   arms:[[[100,72],[110,88],[100,96]]],
+   legs:[[[100,120],[86,152],[84,182],[74,186]],[[100,120],[114,152],[116,182],[126,186]]],
+   eq:[{t:"cable",from:[98,96],to:[18,86]}]},
+  {bg:[FLOOR(186)],head:[104,50],spine:[[100,68],[100,120]],
+   arms:[[[100,72],[118,84],[138,88]]],
+   legs:[[[100,120],[86,152],[84,182],[74,186]],[[100,120],[114,152],[116,182],[126,186]]],
+   eq:[{t:"cable",from:[136,88],to:[18,86]}]}]},
+
+{name:"Sentadilla goblet con mancuerna", tag:"Mancuerna",
+ cues:["Mancuerna en vertical pegada al pecho, codos por dentro de las rodillas abajo.",
+  "Pausa de <b>3 s abajo</b> manteniendo el torso vertical. Esa pausa es lo que convierte 32 kilos en un ejercicio duro.",
+  "La carga por delante hace de contrapeso: bajas más recto que con barra atrás y la lumbar lo agradece."],
+ poses:[
+  {bg:[FLOOR(184)],head:[104,50],spine:[[100,68],[100,112]],
+   arms:[[[100,72],[112,86],[104,74]]],
+   legs:[[[100,112],[100,150],[98,182],[112,184]]],
+   eq:[{t:"db",at:[108,76]}]},
+  {bg:[FLOOR(184)],head:[110,88],spine:[[103,104],[90,140]],
+   arms:[[[103,106],[116,120],[108,108]]],
+   legs:[[[90,140],[116,150],[98,182],[112,184]]],
+   eq:[{t:"db",at:[112,110]}]}]}
+];
+
+
 const DRAW = {};
-[].concat(MOB, D1, D2, D3, D4, MQ).forEach(x => DRAW[x.name] = x);
+[].concat(MOB, D1, D2, D3, D4, MQ, CASA_DRAW).forEach(x => DRAW[x.name] = x);
+// mismo movimiento, otro nombre según el material
+const ALIAS = {
+ "Remo invertido en anillas": "Remo invertido en barra baja",
+ "Fondos en anillas": "Fondos en anillas o paralelas",
+ "Peso muerto rumano a una pierna": "Peso muerto a una pierna con kettlebell",
+ "Puente de glúteo con banda": "Puente de glúteo",
+ "Elevación de gemelo a una pierna": "Elevación de gemelo con mancuerna",
+ "Curl con mancuernas": "Curl martillo",
+ "Curl nórdico con los pies bajo el banco": "Curl nórdico asistido",
+ "Dominadas": "Dominadas lastradas",
+ "HSPU contra la pared": "HSPU estrictas",
+ "Face pull con banda": "Face pull con goma",
+ "Paseo del granjero con mancuernas": "Paseo del granjero con kettlebells",
+ "Peso muerto rumano pesado con mancuernas": "Peso muerto rumano con mancuernas",
+ "Sentadilla goblet con mancuerna y pausa": "Sentadilla goblet con mancuerna",
+ "Aperturas con mancuernas en banco": "Aperturas con mancuernas"
+};
+function drawFor(name){ return DRAW[ALIAS[name] || name]; }
 
 /* ================= plan ================= */
 const K = (a,b,c,d,e) => [a,b,c,d,e];
-const PLAN = [
-{id:"mob", kind:"mob", tag:"Diario", title:"Movilidad · 10 min", items:[
-  {n:"Respiración 90/90", s:"60 s", n_:1, rest:0},
-  {n:"Gato · camello", s:"60 s", n_:1, rest:0},
-  {n:"Rotación torácica en cuadrupedia", s:"40 s / lado", n_:2, rest:0},
-  {n:"Estiramiento de psoas en zancada", s:"40 s / lado", n_:2, rest:0},
-  {n:"Isquiosurales tumbado", s:"40 s / lado", n_:2, rest:0},
-  {n:"Figura 4 · glúteo y piriforme", s:"40 s / lado", n_:2, rest:0},
-  {n:"Bird-dog", s:"60 s", n_:1, rest:0},
-  {n:"Dead bug", s:"60 s", n_:1, rest:0},
-  {n:"Puente de glúteo", s:"45 s", n_:1, rest:0},
-  {n:"Plancha lateral con rodillas flexionadas", s:"25 s / lado", n_:2, rest:0}
-]},
-{id:"d1", kind:"day", tag:"Lunes", title:"Snatch + Pierna", items:[
+const MOB_BLK = {id:"mob", kind:"mob", tag:"Diario", title:"Movilidad · 10 min", items:[
+  {n:"Respiración 90/90", s:"60 s", n_:1, rest:0, voz:"Un minuto de respiración noventa noventa. Túmbate boca arriba con las pantorrillas apoyadas en el sofá o una silla, rodillas y caderas en ángulo recto. Inspira cuatro segundos por la nariz llevando el aire a las costillas, y espira seis segundos soplando lento. La lumbar pegada al suelo todo el rato."},
+  {n:"Gato · camello", s:"60 s", n_:1, rest:0, voz:"Un minuto de gato y camello. En cuadrupedia, manos bajo los hombros y rodillas bajo las caderas. Tres segundos redondeando la espalda hacia arriba, y tres segundos hundiéndola. Despacio, sin buscar el rango máximo."},
+  {n:"Rotación torácica en cuadrupedia", s:"40 s / lado", n_:2, rest:0, voz:"Cuarenta segundos por lado de rotación torácica. Desde cuadrupedia, lleva un brazo al techo abriendo el pecho, y después crúzalo por debajo del cuerpo. La pelvis quieta, mirando al suelo. El giro sale del tórax, no de la lumbar."},
+  {n:"Estiramiento de psoas en zancada", s:"40 s / lado", n_:2, rest:0, voz:"Cuarenta segundos por lado de psoas. Rodilla trasera en el suelo, pie delantero plano. Mete la pelvis hacia dentro apretando el glúteo de la pierna de atrás. Lo tienes que notar delante de la cadera trasera. Si lo notas en la lumbar, mete más la pelvis."},
+  {n:"Isquiosurales tumbado", s:"40 s / lado", n_:2, rest:0, voz:"Cuarenta segundos por lado de isquiosurales. Boca arriba, con una toalla o una goma en el pie, y la otra pierna estirada en el suelo. Sube hasta notar tensión, no dolor, y sin despegar la lumbar del suelo."},
+  {n:"Figura 4 · glúteo y piriforme", s:"40 s / lado", n_:2, rest:0, voz:"Cuarenta segundos por lado de figura cuatro. Cruza el tobillo sobre la rodilla contraria y tira de la pierna de apoyo hacia el pecho. Empuja suavemente la rodilla cruzada hacia fuera con la mano."},
+  {n:"Bird-dog", s:"60 s", n_:1, rest:0, voz:"Un minuto de berd dog. Extiende brazo y pierna contrarios hasta la horizontal, cinco segundos cada repetición, alternando lados. Imagina un vaso de agua apoyado en tu lumbar: que no se derrame. Nada de arquear ni girar."},
+  {n:"Dead bug", s:"60 s", n_:1, rest:0, voz:"Un minuto de ded bag. Boca arriba, brazos y piernas en ángulo recto. Baja brazo y pierna contrarios despacio, sin despegar la lumbar del suelo. Espira mientras extiendes. Unas ocho repeticiones por lado."},
+  {n:"Puente de glúteo", s:"45 s", n_:1, rest:0, voz:"Cuarenta y cinco segundos de puente de glúteo. Talones cerca del glúteo. Sube empujando con los talones y aprieta el glúteo dos segundos arriba. Si lo notas en la espalda baja, mete la pelvis antes de subir y no subas tanto."},
+  {n:"Plancha lateral con rodillas flexionadas", s:"25 s / lado", n_:2, rest:0, voz:"Veinticinco segundos por lado de plancha lateral. Apoyo en el antebrazo y las rodillas, cadera arriba, cuerpo en línea recta. Aprieta el glúteo de abajo y respira normal, sin aguantar el aire."}
+]};
+
+const PLAN_GYM = [MOB_BLK,
+{id:"d1", kind:"day", tag:"Lunes", title:"Pierna A · rodilla", items:[
   {n:"Snatch", s:"5 × 2", n_:5, rest:120, kg:K(35,37.5,40,42.5,30)},
   {n:"Sentadilla frontal", s:"4 × 5", n_:4, rest:180, kg:K(50,55,57.5,60,40)},
   {n:"Sentadilla búlgara", s:"3 × 10 / pierna", n_:3, rest:120, kg:K(12,12,14,14,10), par:true},
@@ -934,34 +1193,100 @@ const PLAN = [
 {id:"d2", kind:"day", tag:"Martes", title:"Torso horizontal", items:[
   {n:"Press banca", s:"4 × 5", n_:4, rest:180, kg:K(45,47.5,50,52.5,35)},
   {n:"Remo con mancuerna con apoyo", s:"4 × 10 / lado", n_:4, rest:120, kg:K(22,24,26,26,18)},
-  {n:"Fondos en anillas o paralelas", s:"3 × 8", n_:3, rest:120, kg:K("peso corporal","+5 kg","+7,5 kg","+10 kg","peso corporal")},
+  {n:"Fondos en anillas o paralelas", s:"3 × 8", n_:3, rest:120, kg:K("peso corporal","peso corporal","+5 kg","+7,5 kg","peso corporal")},
   {n:"Remo invertido en barra baja", s:"3 × 10", n_:3, rest:90, kg:K("peso corporal","peso corporal","pies elevados","pies elevados","peso corporal")},
+  {n:"Aperturas en polea o contractor", s:"3 × 15", n_:3, rest:60, kg:K(10,10,12,12,8)},
   {n:"Curl con barra", s:"3 × 10", n_:3, rest:90, kg:K(20,22.5,22.5,25,15)},
   {n:"Extensión de tríceps sobre cabeza", s:"3 × 10", n_:3, rest:90, kg:K(14,16,16,18,10)},
-  {n:"Aperturas en polea o contractor", s:"3 × 15", n_:3, rest:60, kg:K(10,10,12,12,8), opt:true},
   {n:"Paseo del granjero con kettlebells", s:"3 × 40 m", n_:3, rest:90, kg:K(24,24,28,28,20), par:true}
 ]},
-{id:"d3", kind:"day", tag:"Jueves", title:"Clean & jerk + Pierna", items:[
+{id:"d3", kind:"day", tag:"Jueves", title:"Pierna B · cadera", items:[
   {n:"Clean & jerk", s:"5 × (1+1)", n_:5, rest:150, kg:K(50,55,57.5,60,40)},
   {n:"Rack pull desde la rodilla", s:"4 × 5", n_:4, rest:180, kg:K(70,80,85,90,55)},
   {n:"Hip thrust con barra", s:"3 × 10", n_:3, rest:120, kg:K(50,60,65,70,40)},
-  {n:"Sentadilla goblet con kettlebell", s:"3 × 12", n_:3, rest:90, kg:K(24,24,28,28,20)},
-  {n:"Prensa de piernas", s:"3 × 12", n_:3, rest:120, kg:K(100,110,120,130,80), opt:true},
+  {n:"Peso muerto a una pierna con kettlebell", s:"3 × 10 / pierna", n_:3, rest:75, kg:K(16,16,20,20,12)},
   {n:"Curl nórdico asistido", s:"3 × 6", n_:3, rest:120, kg:K("peso corporal","peso corporal","peso corporal","peso corporal","peso corporal")},
-  {n:"Curl femoral tumbado", s:"3 × 12", n_:3, rest:90, kg:K(30,32,36,40,25), opt:true},
-  {n:"Peso muerto a una pierna con kettlebell", s:"3 × 10 / pierna", n_:3, rest:75, kg:K(16,16,20,20,12)}
+  {n:"Pallof press con banda", s:"3 × 12 / lado", n_:3, rest:60, kg:K("banda","banda","banda media","banda media","banda")},
+  {n:"Prensa de piernas", s:"3 × 12", n_:3, rest:120, kg:K(100,110,120,130,80), opt:true},
+  {n:"Curl femoral tumbado", s:"3 × 12", n_:3, rest:90, kg:K(30,32,36,40,25), opt:true}
 ]},
 {id:"d4", kind:"day", tag:"Viernes", title:"Torso vertical", items:[
   {n:"Press militar estricto", s:"4 × 5", n_:4, rest:180, kg:K(27.5,30,32.5,35,20)},
   {n:"Dominadas lastradas", s:"4 × 8", n_:4, rest:150, kg:K("peso corporal","+2,5 kg","+5 kg","+7,5 kg","peso corporal")},
   {n:"HSPU estrictas", s:"3 × 6", n_:3, rest:120, kg:K("peso corporal","peso corporal","con déficit","con déficit","peso corporal")},
   {n:"Press inclinado con mancuernas", s:"3 × 10", n_:3, rest:120, kg:K(16,18,18,20,12), par:true},
-  {n:"Jalón al pecho", s:"3 × 12", n_:3, rest:90, kg:K(45,50,50,55,35), opt:true},
-  {n:"Elevaciones laterales", s:"3 × 15", n_:3, rest:60, kg:K(6,6,8,8,5)},
-  {n:"Curl martillo", s:"3 × 12", n_:3, rest:75, kg:K(10,12,12,14,8)},
-  {n:"Face pull con goma", s:"3 × 15", n_:3, rest:60, kg:K("goma","goma","goma media","goma media","goma")}
+  {n:"Pull-over con mancuerna", s:"3 × 12", n_:3, rest:90, kg:K(20,22,24,26,16)},
+  {n:"Elevaciones laterales", s:"3 × 15", n_:3, rest:60, kg:K(6,6,8,8,5), par:true},
+  {n:"Face pull con goma", s:"3 × 15", n_:3, rest:60, kg:K("goma","goma","goma media","goma media","goma")},
+  {n:"Jalón al pecho", s:"3 × 12", n_:3, rest:90, kg:K(45,50,50,55,35), opt:true}
 ]}
 ];
+
+const PLAN_HOME = [MOB_BLK,
+{id:"h1", kind:"day", tag:"Lunes", title:"Pierna A · rodilla", items:[
+  {n:"Snatch con mancuerna", s:"5 × 3 / brazo", n_:5, rest:120, kg:K(16,18,20,22,12)},
+  {n:"Sentadilla goblet con mancuerna", s:"4 × 8", n_:4, rest:180, kg:K(24,26,28,32,20)},
+  {n:"Sentadilla búlgara", s:"3 × 10 / pierna", n_:3, rest:120, kg:K(20,22,24,26,16), par:true},
+  {n:"Peso muerto rumano con mancuernas", s:"3 × 10", n_:3, rest:120, kg:K(22,24,26,28,18), par:true},
+  {n:"Elevación de gemelo a una pierna", s:"3 × 15 / pierna", n_:3, rest:75, kg:K(20,22,24,26,16)},
+  {n:"Hollow hold", s:"3 × 30–45 s", n_:3, rest:60, kg:K("30 s","35 s","40 s","45 s","30 s")}
+]},
+{id:"h2", kind:"day", tag:"Martes", title:"Torso horizontal", items:[
+  {n:"Press banca con mancuernas", s:"4 × 8", n_:4, rest:180, kg:K(20,22,24,26,16), par:true},
+  {n:"Remo con mancuerna con apoyo", s:"4 × 10 / lado", n_:4, rest:120, kg:K(24,26,28,30,20)},
+  {n:"Fondos en anillas", s:"3 × 8", n_:3, rest:120, kg:K("peso corporal","peso corporal","+5 kg","+7,5 kg","peso corporal")},
+  {n:"Remo invertido en anillas", s:"3 × 10", n_:3, rest:90, kg:K("peso corporal","peso corporal","pies elevados","pies elevados","peso corporal")},
+  {n:"Aperturas con mancuernas", s:"3 × 15", n_:3, rest:60, kg:K(10,10,12,12,8), par:true},
+  {n:"Curl con mancuernas", s:"3 × 10", n_:3, rest:90, kg:K(12,14,14,16,10), par:true},
+  {n:"Extensión de tríceps sobre cabeza", s:"3 × 10", n_:3, rest:90, kg:K(16,18,18,20,12)},
+  {n:"Paseo del granjero con mancuernas", s:"3 × 40 m", n_:3, rest:90, kg:K(28,30,32,32,24), par:true}
+]},
+{id:"h3", kind:"day", tag:"Jueves", title:"Pierna B · cadera", items:[
+  {n:"Clean y press con mancuernas", s:"5 × 3", n_:5, rest:150, kg:K(16,18,20,22,12), par:true},
+  {n:"Peso muerto rumano pesado con mancuernas", s:"4 × 8", n_:4, rest:180, kg:K(26,28,30,32,20), par:true},
+  {n:"Hip thrust a una pierna", s:"3 × 10 / pierna", n_:3, rest:120, kg:K(20,24,28,32,16)},
+  {n:"Peso muerto rumano a una pierna", s:"3 × 10 / pierna", n_:3, rest:75, kg:K(16,18,20,22,12)},
+  {n:"Curl nórdico con los pies bajo el banco", s:"3 × 6", n_:3, rest:120, kg:K("peso corporal","peso corporal","peso corporal","peso corporal","peso corporal")},
+  {n:"Pallof press con banda", s:"3 × 12 / lado", n_:3, rest:60, kg:K("banda","banda","banda media","banda media","banda")},
+  {n:"Zancada inversa con mancuernas", s:"3 × 10 / pierna", n_:3, rest:120, kg:K(16,18,20,22,12), par:true, opt:true},
+  {n:"Puente de glúteo con banda", s:"3 × 15", n_:3, rest:75, kg:K("banda","banda","banda","banda","banda"), opt:true}
+]},
+{id:"h4", kind:"day", tag:"Viernes", title:"Torso vertical", items:[
+  {n:"Press militar sentado con mancuernas", s:"4 × 8", n_:4, rest:180, kg:K(16,18,20,22,12), par:true},
+  {n:"Dominadas", s:"4 × 8", n_:4, rest:150, kg:K("peso corporal","+2,5 kg","+5 kg","+7,5 kg","peso corporal")},
+  {n:"HSPU contra la pared", s:"3 × 6", n_:3, rest:120, kg:K("peso corporal","peso corporal","con déficit","con déficit","peso corporal")},
+  {n:"Press inclinado con mancuernas", s:"3 × 10", n_:3, rest:120, kg:K(16,18,18,20,12), par:true},
+  {n:"Pull-over con mancuerna", s:"3 × 12", n_:3, rest:90, kg:K(20,22,24,26,16)},
+  {n:"Elevaciones laterales", s:"3 × 15", n_:3, rest:60, kg:K(8,8,10,10,6), par:true},
+  {n:"Face pull con banda", s:"3 × 15", n_:3, rest:60, kg:K("banda","banda","banda media","banda media","banda")},
+  {n:"Step-up al banco", s:"3 × 10 / pierna", n_:3, rest:90, kg:K(14,16,16,18,12), par:true, opt:true}
+]}
+];
+
+let PLACE = "gym";
+let PLAN = PLAN_GYM;
+const PLACENOTE = {
+  gym: "Gimnasio · barra, kettlebell, rig y alguna máquina.",
+  home: "Casa · mismos días y mismo orden que en el gimnasio, con tu material: mancuernas hasta 32 kg, banco reclinable, anillas, barra de dominadas y banda. Cambia la herramienta, no el patrón."
+};
+function setPlace(p){
+  if(p === PLACE) return;
+  PLACE = p; PLAN = (p === "home") ? PLAN_HOME : PLAN_GYM;
+  saveState(); buildPlaces(); build(); renderAdjLog();
+  if(V.on) closeVoice();
+}
+function buildPlaces(){
+  const w = document.getElementById("places");
+  w.innerHTML = "";
+  [["gym","Gimnasio"],["home","Casa"]].forEach(([id,lab])=>{
+    const b = document.createElement("button");
+    b.className = "wk" + (PLACE===id ? " on" : "");
+    b.textContent = lab;
+    b.onclick = ()=>setPlace(id);
+    w.appendChild(b);
+  });
+  document.getElementById("placenote").textContent = PLACENOTE[PLACE];
+}
 
 const WKNOTE = [
  "Semana 1 · calibración. Deja 3 repeticiones en reserva y quédate con ganas. Olímpicos desde hang.",
@@ -979,20 +1304,37 @@ const key = (b,i) => b + ":" + i;
 
 /* ================= persistencia (en la propia URL) ================= */
 let LOADING = false;
-function saveState(){
-  if(LOADING) return;
-  const st = {w:WEEK, s:{}, a:{}};
+const LSKEY = "entreno.v1";
+function snapshot(){
+  const st = {w:WEEK, p:PLACE, s:{}, a:{}, v:VPREF};
   Object.keys(S).forEach(k=>{ if(S[k]) st.s[k]=S[k]; });
   Object.keys(ADJ).forEach(k=>{ if(ADJ[k]) st.a[k]=ADJ[k]; });
-  try{ history.replaceState(null, "", "#" + encodeURIComponent(JSON.stringify(st))); }catch(e){}
+  return st;
+}
+function saveState(){
+  if(LOADING) return;
+  const txt = JSON.stringify(snapshot());
+  // 1) en la propia dirección: así el enlace lleva tu estado
+  try{ history.replaceState(null, "", "#" + encodeURIComponent(txt)); }catch(e){}
+  // 2) en el navegador: para cuando la página va dentro de un visor y la URL no se toca
+  try{ localStorage.setItem(LSKEY, txt); }catch(e){}
+}
+function applyState(st){
+  if(!st) return false;
+  if(typeof st.w === "number") WEEK = st.w;
+  if(st.p === "home" || st.p === "gym"){ PLACE = st.p; PLAN = (PLACE==="home") ? PLAN_HOME : PLAN_GYM; }
+  if(st.v) VPREF = Object.assign(VPREF, st.v);
+  Object.assign(S, st.s || {});
+  Object.assign(ADJ, st.a || {});
+  return true;
 }
 function loadState(){
-  if(!location.hash || location.hash.length < 3) return;
+  if(location.hash && location.hash.length > 2){
+    try{ if(applyState(JSON.parse(decodeURIComponent(location.hash.slice(1))))) return; }catch(e){}
+  }
   try{
-    const st = JSON.parse(decodeURIComponent(location.hash.slice(1)));
-    if(typeof st.w === "number") WEEK = st.w;
-    Object.assign(S, st.s || {});
-    Object.assign(ADJ, st.a || {});
+    const raw = localStorage.getItem(LSKEY);
+    if(raw) applyState(JSON.parse(raw));
   }catch(e){}
 }
 
@@ -1015,7 +1357,7 @@ function mmss(t){
 
 /* ================= dibujo ================= */
 function framesFor(name){
-  const d = DRAW[name];
+  const d = drawFor(name);
   const box = document.createElement("div");
   box.className = "frames";
   if(!d) return box;
@@ -1084,7 +1426,7 @@ function fillPanel(it, blk){
   if(pan.dataset.filled) return;
   pan.dataset.filled = "1";
   pan.appendChild(framesFor(it.n));
-  const d = DRAW[it.n];
+  const d = drawFor(it.n);
   if(d){
     const ul=document.createElement("ul");
     d.cues.forEach(t=>{ const li=document.createElement("li"); li.innerHTML=t; ul.appendChild(li); });
@@ -1225,6 +1567,13 @@ function renderAdjLog(){
     </div></div>`;
 }
 function clearAdj(){ Object.keys(ADJ).forEach(k=>delete ADJ[k]); refresh(); saveState(); renderAdjLog(); }
+function borrarTodo(){
+  Object.keys(S).forEach(k=>delete S[k]);
+  Object.keys(ADJ).forEach(k=>delete ADJ[k]);
+  try{ localStorage.removeItem(LSKEY); }catch(e){}
+  try{ history.replaceState(null, "", location.pathname); }catch(e){}
+  refresh(); renderAdjLog();
+}
 function copyLink(){
   saveState();
   const btn=document.getElementById("lnkbtn");
@@ -1276,6 +1625,7 @@ function startT(label){
     T = (TEND - Date.now())/1000;
     if(T<=0){ T=0; stopT(); ding(); buzz([90,70,90]); tlabel("¡Vamos!"); flashT(); }
     paintT();
+    if(V.on) vTick();
   }, 200);
   paintT(); wake();
 }
@@ -1387,7 +1737,7 @@ function flowSecs(i){
   return per * (FLOW[i].n_ || 1);
 }
 function renderFlow(){
-  const it = FLOW[FI], d = DRAW[it.n];
+  const it = FLOW[FI], d = drawFor(it.n);
   if(!FT) FT = flowSecs(FI);
   const sheet = document.getElementById("sheet");
   sheet.innerHTML = `<div class="flow">
@@ -1451,6 +1801,409 @@ function copySummary(){
     .catch(()=>{ openOv('<h3>Resumen</h3><p class="h">Cópialo a mano.</p><div class="out"><pre style="white-space:pre-wrap;margin:0;font-size:13px">'+txt.replace(/</g,"&lt;")+'</pre></div>'); });
 }
 
+
+
+/* ================= modo voz ================= */
+const V = {on:false, blk:null, i:0, resting:false, said:{}, mic:false, rec:null};
+let VOICES = [], TTSREADY = false;
+
+function pickVoice(){
+  VOICES = window.speechSynthesis ? speechSynthesis.getVoices() : [];
+  return VOICES.find(v=>v.lang==="es-ES" && /Mónica|Monica|Marisol/i.test(v.name))
+      || VOICES.find(v=>v.lang==="es-ES")
+      || VOICES.find(v=>/^es/.test(v.lang)) || null;
+}
+if(window.speechSynthesis){
+  speechSynthesis.onvoiceschanged = pickVoice;
+  pickVoice();
+}
+const ORD = ["","primera","segunda","tercera","cuarta","quinta","sexta","séptima","octava"];
+const SPEAK_MAP = [
+  [/&/g, " y "], [/\s*\+\s*/g, ", y "],
+  [/\bHSPU\b/gi, "flexiones en vertical"],
+  [/\bclean\b/gi, "clin"], [/\bjerk\b/gi, "yerk"],
+  [/\bsnatch\b/gi, "snach"],
+  [/\brack pull\b/gi, "rak pul"],
+  [/\bhip thrust\b/gi, "jip trast"],
+  [/\bhollow hold\b/gi, "jólou jold"],
+  [/\bbird-?dog\b/gi, "berd dog"],
+  [/\bdead bug\b/gi, "ded bag"],
+  [/\bface pull\b/gi, "feis pul"],
+  [/\bgoblet\b/gi, "góblet"],
+  [/\bkettlebells?\b/gi, "kételbel"],
+  [/\bhang\b/gi, "jang"],
+  [/\bpeso corporal\b/gi, "tu propio peso"],
+  [/\bdéficit\b/gi, "déficit"],
+  [/90\s*\/\s*90/g, "noventa noventa"],
+  [/\s·\s/g, ", "],
+  [/\b(\d+)\s*min\b/g, (m,n) => num2es(+n) + " minutos"],
+  [/\bfigura 4\b/gi, "figura cuatro"],
+  [/\bstep-?up\b/gi, "step ap"],
+  [/\bpull-?over\b/gi, "pul óver"],
+  [/\bpallof\b/gi, "palof"],
+  [/\banillas\b/gi, "anillas"],
+  [/\s{2,}/g, " "]
+];
+function speakable(t){
+  SPEAK_MAP.forEach(([r,v]) => { t = t.replace(r, v); });
+  return t.replace(/\s+([,.])/g, "$1").trim();
+}
+let VPREF = {name:"", rate:1, pitch:1};
+function chosenVoice(){
+  if(VPREF.name){
+    const v = (VOICES.length ? VOICES : (window.speechSynthesis ? speechSynthesis.getVoices() : []))
+      .find(x=>x.name === VPREF.name);
+    if(v) return v;
+  }
+  return pickVoice();
+}
+function say(txt, now){
+  if(!window.speechSynthesis || !txt) return;
+  try{
+    if(now) speechSynthesis.cancel();
+    // troceo por frases: da respiración natural y evita el corte a media palabra
+    const partes = speakable(txt).split(/(?<=[.!?])\s+/).filter(x=>x.trim());
+    const v = chosenVoice();
+    partes.forEach(pz=>{
+      const u = new SpeechSynthesisUtterance(pz);
+      if(v) u.voice = v;
+      u.lang = (v && v.lang) || "es-ES";
+      u.rate = VPREF.rate; u.pitch = VPREF.pitch;
+      speechSynthesis.speak(u);
+    });
+  }catch(e){}
+}
+function unlockTTS(){
+  if(TTSREADY || !window.speechSynthesis) return;
+  try{
+    const u = new SpeechSynthesisUtterance(" ");
+    u.volume = 0; speechSynthesis.speak(u); TTSREADY = true;
+  }catch(e){}
+}
+["touchstart","mousedown"].forEach(ev =>
+  document.addEventListener(ev, function once(){ unlockTTS();
+    document.removeEventListener(ev, once); }, {passive:true}));
+
+/* --- texto hablado --- */
+
+/* --- números a palabras, para que no suene a máquina --- */
+const U = ["cero","uno","dos","tres","cuatro","cinco","seis","siete","ocho","nueve","diez",
+ "once","doce","trece","catorce","quince","dieciséis","diecisiete","dieciocho","diecinueve","veinte",
+ "veintiuno","veintidós","veintitrés","veinticuatro","veinticinco","veintiséis","veintisiete",
+ "veintiocho","veintinueve"];
+const D = {30:"treinta",40:"cuarenta",50:"cincuenta",60:"sesenta",70:"setenta",80:"ochenta",90:"noventa"};
+const C = {100:"cien",200:"doscientos",300:"trescientos",400:"cuatrocientos",500:"quinientos"};
+function num2es(n){
+  n = Math.round(n);
+  if(n < 30) return U[n];
+  if(n < 100){ const d = Math.floor(n/10)*10, r = n%10;
+    return D[d] + (r ? " y " + U[r] : ""); }
+  if(n === 100) return "cien";
+  const c = Math.floor(n/100)*100, r = n%100;
+  const cs = C[c] || (num2es(c/100) + "cientos");
+  return cs + (r ? " " + num2es(r) : "");
+}
+function kilos(v){
+  const ent = Math.floor(v), fr = Math.round((v - ent)*100)/100;
+  if(fr === 0) return num2es(ent) + (ent === 1 ? " kilo" : " kilos");
+  if(fr === 0.5) return num2es(ent) + " kilos y medio";
+  if(fr === 0.25) return num2es(ent) + " kilos y cuarto";
+  return num2es(ent) + " coma " + num2es(Math.round(fr*10)) + " kilos";
+}
+
+function plainKg(it){
+  if(!it.kg) return "";
+  const v = it.kg[WEEK];
+  if(typeof v !== "number"){
+    const t = String(v);
+    if(/^\d+\s*s$/.test(t)) return "";                       // duración: ya va en las series
+    if(/peso corporal/i.test(t)) return "tu propio peso";
+    if(/pies elevados/i.test(t)) return "los pies elevados";
+    if(/déficit/i.test(t)) return "déficit bajo las manos";
+    if(/^goma$/i.test(t)) return "goma";
+    if(/^goma media$/i.test(t)) return "goma media";
+    const m = t.match(/^\+\s*([\d.,]+)\s*kg$/);
+    if(m) return kilos(parseFloat(m[1].replace(",", "."))) + " de lastre";
+    return t;
+  }
+  const t = v + (ADJ[it._k]||0);
+  return (it.par ? "dos mancuernas de " + kilos(t) + " cada una" : kilos(t));
+}
+function plainSets(it){
+  const s = it.s;
+  const m = s.match(/^(\d+)\s*×\s*(.+)$/);
+  if(!m) return s;
+  const n = +m[1];
+  let r = m[2].trim();
+  const series = num2es(n) + (n === 1 ? " serie" : " series");
+  if(/^\(1\+1\)$/.test(r)) return series + " de un clean y un jerk";
+  if(/m$/.test(r)) return num2es(n) + " recorridos de " + num2es(parseInt(r)) + " metros";
+  if(/s$/.test(r)){
+    const rr = r.replace(/\s*s$/,"").split(/[–-]/).map(x=>num2es(parseInt(x)));
+    return series + " aguantando " + (rr.length>1 ? "de " : "") + rr.join(" a ") + " segundos";
+  }
+  const reps = parseInt(r);
+  let cola = "";
+  if(/pierna/.test(r)) cola = " por pierna";
+  else if(/lado/.test(r)) cola = " por lado";
+  return series + " de " + num2es(reps) + (reps === 1 ? " repetición" : " repeticiones") + cola;
+}
+function introText(it){
+  if(it.voz) return it.voz;
+  let t = it.n + ", " + plainSets(it);
+  const k = plainKg(it);
+  if(k) t += ", con " + k;
+  return t + ".";
+}
+// versión corta, para "repetir" y para los avisos
+function shortText(it){
+  let t = it.n + ", " + plainSets(it);
+  const k = plainKg(it);
+  if(k) t += ", con " + k;
+  return t + ".";
+}
+
+/* --- apertura --- */
+function openVoice(){
+  unlockTTS(); unlockAudio();
+  const m = document.getElementById("vmode");
+  m.classList.add("on");
+  document.getElementById("vday").textContent = "Elige la sesión";
+  document.getElementById("vmic").style.display = "none";
+  document.getElementById("vbody").innerHTML =
+    '<p class="vname" style="font-size:26px">¿Qué toca hoy?</p>' +
+    '<p class="vnext">Te iré diciendo en voz alta el ejercicio, el peso y las series, y te cantaré el descanso. No hace falta que mires la pantalla.</p>';
+  const b = document.getElementById("vbtns");
+  b.className = "vpick";
+  b.innerHTML = PLAN.map((p,i)=>{
+    const done = p.items.filter(it=>(S[it._k]||0)>=it.n_).length;
+    return `<button onclick="startVoice(${i})">${p.tag} · ${p.title}
+      <span style="display:block;font-size:12.5px;color:var(--muted);font-weight:500;margin-top:2px">${done}/${p.items.length} hecho</span></button>`;
+  }).join("");
+  document.getElementById("vheard").textContent = "";
+  wake();
+}
+function closeVoice(){
+  V.on = false; stopMic();
+  try{ speechSynthesis.cancel(); }catch(e){}
+  document.getElementById("vmode").classList.remove("on");
+  document.getElementById("vbtns").className = "vbtns";
+}
+function startVoice(bi){
+  V.on = true; V.blk = PLAN[bi]; V.resting = false; V.said = {};
+  V.i = V.blk.items.findIndex(it => (S[it._k]||0) < it.n_);
+  if(V.i < 0) V.i = 0;
+  document.getElementById("vbtns").className = "vbtns";
+  document.getElementById("vmic").style.display = micSupported() ? "block" : "none";
+  const it = V.blk.items[V.i];
+  say(V.blk.tag + ", " + V.blk.title + ". " + (it.voz ? it.voz : "Empezamos con " + shortText(it)), true);
+  vRender();
+  wake();
+}
+
+/* --- pintado --- */
+function vRender(){
+  if(!V.on) return;
+  const it = V.blk.items[V.i], c = S[it._k]||0;
+  document.getElementById("vday").textContent = V.blk.tag + " · " + V.blk.title;
+  const body = document.getElementById("vbody");
+  const btns = document.getElementById("vbtns");
+
+  if(V.resting){
+    const nx = (c >= it.n_) ? nextItem() : it;
+    body.innerHTML = `<div class="vrest on">
+        <div class="vrlab">Descanso</div>
+        <div class="vclock" id="vclock">${mmss(T)}</div>
+        <p class="vnext">${ c>=it.n_
+          ? (nx ? "Después: <b>"+nx.n+"</b>"+(nx.kg?" · "+kgLabel(nx):"") : "Última del día")
+          : "Siguiente: serie "+(c+1)+" de "+it.n_+(it.kg?" · "+kgLabel(it):"") }</p>
+      </div>`;
+    btns.innerHTML = `
+      <button class="vgo rest" onclick="vSkipRest()">Saltar descanso</button>
+      <div class="vrow">
+        <button class="vsec" onclick="vAddTime(30)">+30 s</button>
+        <button class="vsec" onclick="vTechnique()">Técnica</button>
+      </div>`;
+  } else {
+    const dots = Array.from({length: it.n_},(_,k)=>
+      `<span class="vdot${k<c?" on":""}"></span>`).join("");
+    body.innerHTML = `
+      <div class="vpos">Ejercicio ${V.i+1} de ${V.blk.items.length}</div>
+      <div class="vname">${it.n}</div>
+      ${it.kg ? `<div class="vkg">${kgLabel(it)}</div>` : ""}
+      <div class="vsets">${it.s}</div>
+      <div class="vdots">${dots}</div>`;
+    btns.innerHTML = `
+      <button class="vgo" onclick="vDone()">Hecha la ${ORD[Math.min(c+1,it.n_)]||Math.min(c+1,it.n_)}</button>
+      <div class="vrow">
+        <button class="vsec" onclick="vTechnique()">Técnica</button>
+        <button class="vsec" onclick="vRepeat()">Repetir</button>
+        <button class="vsec" onclick="vNext()">Saltar</button>
+      </div>`;
+  }
+}
+
+function nextItem(){
+  for(let j=V.i+1;j<V.blk.items.length;j++) return V.blk.items[j];
+  return null;
+}
+
+/* --- acciones --- */
+function vDone(){
+  const it = V.blk.items[V.i];
+  const c = Math.min((S[it._k]||0) + 1, it.n_);
+  S[it._k] = c; refresh(); saveState(); buzz(20);
+  if(c >= it.n_){
+    const nx = nextItem();
+    if(it.rest && nx){
+      say("Ejercicio terminado. Descansa " + restWords(it.rest) + ". Después vamos con " + shortText(nx), true);
+      vStartRest(it.rest);
+    } else if(nx){
+      V.i++; say("Siguiente. " + introText(nx), true); vRender();
+    } else {
+      say("Sesión terminada. Buen trabajo.", true);
+      document.getElementById("vbody").innerHTML =
+        '<div class="vname">Sesión terminada</div><p class="vnext">Bien hecho. Acuérdate de la movilidad si aún no la has hecho.</p>';
+      document.getElementById("vbtns").innerHTML =
+        '<button class="vgo" onclick="openVoice()">Otra sesión</button>';
+    }
+  } else {
+    say("Hecha la " + (ORD[c]||num2es(c)) + " de " + num2es(it.n_) + ". Descansa " + restWords(it.rest) + ".", true);
+    vStartRest(it.rest);
+  }
+}
+function restWords(sec){
+  if(!sec) return "poco";
+  if(sec % 60 === 0) return sec===60 ? "un minuto" : num2es(sec/60) + " minutos";
+  if(sec < 60) return num2es(sec) + " segundos";
+  return num2es(Math.floor(sec/60)) + " minutos y " + num2es(sec%60) + " segundos";
+}
+function vStartRest(sec){
+  if(!sec){ vAfterRest(); return; }
+  V.resting = true; V.said = {};
+  setT(sec); startT(V.blk.items[V.i].n);
+  vRender();
+}
+function vTick(){
+  const cl = document.getElementById("vclock");
+  if(cl) cl.textContent = mmss(T);
+  const t = Math.round(T);
+  if(V.resting){
+    if(t === 30 && !V.said[30]){ V.said[30]=1; say("Treinta segundos."); }
+    if(t === 10 && !V.said[10]){ V.said[10]=1; say("Diez segundos, prepárate."); }
+    if(t <= 0 && !V.said[0]){ V.said[0]=1; vAfterRest(); }
+  }
+}
+function vAfterRest(){
+  V.resting = false;
+  const it = V.blk.items[V.i], c = S[it._k]||0;
+  if(c >= it.n_){
+    const nx = nextItem();
+    if(nx){ V.i++; say("Vamos. " + introText(nx), true); }
+  } else {
+    say("Vamos con la " + (ORD[c+1]||num2es(c+1)) + " de " + num2es(it.n_) + (plainKg(it) ? ", " + plainKg(it) : "") + ".", true);
+  }
+  vRender();
+}
+function vSkipRest(){ stopT(); V.said[0]=1; vAfterRest(); }
+function vAddTime(n){ T += n; TEND += n*1000; V.said={}; vRender(); paintT(); }
+function vRepeat(){ const it=V.blk.items[V.i]; say(it.voz ? it.voz : shortText(it), true); }
+function vNext(){
+  if(V.i < V.blk.items.length-1){ V.i++; V.resting=false; stopT();
+    say("Saltamos. " + introText(V.blk.items[V.i]), true); vRender(); }
+}
+function vTechnique(){
+  const it = V.blk.items[V.i], d = drawFor(it.n);
+  if(!d){ say("No tengo notas para este.", true); return; }
+  const txt = d.cues.slice(0,2).map(c=>c.replace(/<[^>]+>/g,"")).join(" ");
+  say(txt, true);
+}
+
+/* --- ajustes de voz --- */
+function esVoices(){
+  const all = (window.speechSynthesis ? speechSynthesis.getVoices() : []);
+  VOICES = all;
+  const es = all.filter(v=>/^es/i.test(v.lang));
+  return es.length ? es : all;
+}
+function openVoiceSettings(){
+  const list = esVoices();
+  const rows = list.length ? list.map(v=>{
+    const sel = (VPREF.name ? v.name===VPREF.name : v===pickVoice());
+    const cal = /premium|enhanced|siri/i.test(v.name) ? " · alta calidad" : "";
+    return `<button class="vopt${sel?" sel":""}" onclick="setVoice('${v.name.replace(/'/g,"\\'")}')">
+      <span>${v.name}<span style="display:block;font-size:11.5px;color:var(--muted)">${v.lang}${cal}</span></span>
+      <span class="vplay">Probar</span></button>`;
+  }).join("") : '<p class="h">Este navegador no expone ninguna voz. Prueba en Safari.</p>';
+  openOv(`<h3>Voz</h3>
+    <p class="h">Elige la que menos robótica te suene. Toca cualquiera para oírla.</p>
+    <div class="vopts">${rows}</div>
+    <div class="fld"><label>Velocidad</label>
+      <input id="vrate" type="range" min="0.7" max="1.3" step="0.05" value="${VPREF.rate}"></div>
+    <div class="fld"><label>Tono</label>
+      <input id="vpitch" type="range" min="0.7" max="1.3" step="0.05" value="${VPREF.pitch}"></div>
+    <button class="mini go" style="width:100%;padding:12px" onclick="testVoice()">Escuchar ejemplo</button>
+    <p class="h" style="margin-top:14px">Si todas suenan mecánicas, en el iPhone ve a
+      <b>Ajustes → Accesibilidad → Contenido hablado → Voces → Español</b> y descarga una voz
+      <b>Premium</b>. Mejora mucho, aunque Safari no siempre expone todas las instaladas.</p>`);
+  ["vrate","vpitch"].forEach(id=>{
+    const e = document.getElementById(id);
+    e.addEventListener("change", ()=>{
+      VPREF.rate = parseFloat(document.getElementById("vrate").value);
+      VPREF.pitch = parseFloat(document.getElementById("vpitch").value);
+      saveState(); testVoice();
+    });
+  });
+}
+function setVoice(n){
+  VPREF.name = n; saveState();
+  document.querySelectorAll(".vopt").forEach(b=>b.classList.remove("sel"));
+  if(event && event.currentTarget) event.currentTarget.classList.add("sel");
+  testVoice();
+}
+function testVoice(){
+  say("Sentadilla frontal, cuatro series de cinco repeticiones, con cincuenta kilos. Descansa tres minutos.", true);
+}
+
+/* --- micrófono (experimental) --- */
+function micSupported(){
+  return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+}
+function toggleMic(){ V.mic ? stopMic() : startMic(); }
+function startMic(){
+  const R = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!R) return;
+  try{
+    V.rec = new R();
+    V.rec.lang = "es-ES"; V.rec.continuous = true; V.rec.interimResults = false;
+    V.rec.onresult = e => {
+      const t = e.results[e.results.length-1][0].transcript.toLowerCase().trim();
+      document.getElementById("vheard").textContent = "Oído: " + t;
+      vCommand(t);
+    };
+    V.rec.onerror = () => { document.getElementById("vheard").textContent =
+      "El micro ha fallado. Usa los botones."; stopMic(); };
+    V.rec.onend = () => { if(V.mic){ try{ V.rec.start(); }catch(e){} } };
+    V.rec.start();
+    V.mic = true;
+    document.getElementById("vmic").classList.add("on");
+    document.getElementById("vheard").textContent = "Escuchando: hecho · técnica · repite · siguiente";
+  }catch(e){ document.getElementById("vheard").textContent = "Este navegador no permite el micro."; }
+}
+function stopMic(){
+  V.mic = false;
+  try{ V.rec && V.rec.stop(); }catch(e){}
+  const b = document.getElementById("vmic"); if(b) b.classList.remove("on");
+}
+function vCommand(t){
+  if(/hecho|hecha|listo|lista|ya está|vale/.test(t)) return V.resting ? vSkipRest() : vDone();
+  if(/técnica|tecnica|cómo|como se hace/.test(t)) return vTechnique();
+  if(/repite|repetir|qué toca|que toca|cuánto|cuanto peso/.test(t)) return vRepeat();
+  if(/siguiente|salta|saltar/.test(t)) return vNext();
+  if(/más tiempo|mas tiempo|treinta más|espera/.test(t)) return vAddTime(30);
+  if(/salir|terminar|para/.test(t)) return closeVoice();
+}
+
 /* ================= css extra ================= */
 const st = document.createElement("style");
 st.textContent = `.row.nextup{background:var(--accent-soft)}
@@ -1460,6 +2213,7 @@ document.head.appendChild(st);
 
 /* ================= arranque ================= */
 LOADING = true; loadState(); LOADING = false;
+buildPlaces();
 buildWeeks();
 build();
 renderAdjLog();
