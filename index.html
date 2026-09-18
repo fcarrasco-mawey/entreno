@@ -18,7 +18,7 @@
     --line:#e3e0da; --accent:#8a5a2b; --accent-soft:#f4ece3;
     --fig:#2f2d2a; --eq:#8a5a2b; --guide:#c9c4bb; --panel:#f5f3ef;
     --mob:#3f6b52; --mob-soft:#e9f1ec; --warn:#b3543a;
-    --done:#3f6b52; --shadow:0 8px 28px rgba(0,0,0,.10);
+    --done:#3f6b52; --done-soft:#eaf2ed; --shadow:0 8px 28px rgba(0,0,0,.10);
   }
   @media (prefers-color-scheme: dark){
     :root{
@@ -26,7 +26,7 @@
       --line:#332f2b; --accent:#d29a63; --accent-soft:#2a221a;
       --fig:#e2ded7; --eq:#d29a63; --guide:#4a453f; --panel:#191817;
       --mob:#7fbb9c; --mob-soft:#1b2620; --warn:#e08a6c;
-      --done:#7fbb9c; --shadow:0 8px 28px rgba(0,0,0,.5);
+      --done:#7fbb9c; --done-soft:#1b2620; --shadow:0 8px 28px rgba(0,0,0,.5);
     }
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -69,6 +69,13 @@
   .row.ssline{border-left:3px solid var(--accent);margin-left:-3px}
   .bh{cursor:pointer;-webkit-user-select:none;user-select:none}
   .bh:active{background:var(--accent-soft)}
+  .estado{width:9px;height:9px;border-radius:50%;flex:0 0 auto;background:var(--guide)}
+  .blk.pendiente .estado{background:var(--warn);opacity:.5}
+  .blk.empezado .estado{background:var(--accent);opacity:.75}
+  .blk.hecho .estado{background:var(--done);opacity:1}
+  .blk.hecho .bh{background:var(--done-soft)}
+  .blk.hecho .prog{color:var(--done)}
+  .blk.hecho .bh h2{color:var(--done)}
   .bcaret{font-size:21px;line-height:1;color:var(--muted);transform:rotate(90deg);
           transition:transform .18s ease;margin-left:2px}
   .blk.cerrado .bcaret{transform:rotate(0deg)}
@@ -1666,6 +1673,7 @@ function build(){
     h.setAttribute("role","button"); h.setAttribute("tabindex","0");
     h.innerHTML = '<span class="tag">'+blk.tag+'</span><h2>'+blk.title+'</h2>'
       + (textoDuracion(blk) ? '<span class="dur">'+textoDuracion(blk)+'</span>' : "")
+      + (blk.kind === "day" ? '<span class="estado" id="es-'+blk.id+'"></span>' : "")
       + '<span class="prog" id="pg-'+blk.id+'"></span>'
       + '<span class="bcaret">\u203a</span>';
     h.onclick = ()=>toggleBlk(blk.id);
@@ -1816,6 +1824,8 @@ function pintarBloques(){
     const el = document.getElementById("blk-" + b.id);
     if(el) el.classList.toggle("cerrado", !ABIERTO[b.id]);
   });
+  const cg = document.getElementById("blk-cargas");
+  if(cg) cg.classList.toggle("cerrado", !ABIERTO.cargas);
 }
 function abrirPorDefecto(){
   const dias = PLAN.filter(b=>b.kind === "day");
@@ -1824,9 +1834,9 @@ function abrirPorDefecto(){
   ABIERTO[(pendiente || dias[0]).id] = 1;
 }
 function toggleBlk(id){
-  const blk = PLAN.find(b=>b.id === id); if(!blk) return;
+  const blk = PLAN.find(b=>b.id === id);
   const abierto = !!ABIERTO[id];
-  if(!abierto && blk.kind === "day"){
+  if(!abierto && blk && blk.kind === "day"){
     PLAN.forEach(b=>{ if(b.kind === "day") ABIERTO[b.id] = 0; });
   }
   ABIERTO[id] = abierto ? 0 : 1;
@@ -1919,6 +1929,13 @@ function refresh(){
     });
     document.getElementById("pg-"+blk.id).textContent = done + "/" + blk.items.length;
     document.getElementById("pf-"+blk.id).style.width = (100*done/blk.items.length) + "%";
+    const caja = document.getElementById("blk-"+blk.id);
+    if(caja && blk.kind === "day"){
+      const total = blk.items.length;
+      caja.classList.toggle("hecho", done >= total);
+      caja.classList.toggle("empezado", done > 0 && done < total);
+      caja.classList.toggle("pendiente", done === 0);
+    }
     const dur = blk.kind==="day" ? document.querySelector("#blk-"+CSS.escape(blk.id)+" .dur") : null;
     if(dur) dur.textContent = textoDuracion(blk);
   });
@@ -1945,15 +1962,18 @@ function renderLog(){
   host.style.display="block";
   const rows = L.map(it=>'<tr><td>'+it.n+'</td><td class="nw">'+(W[it._e]||"—")+'</td>'
     + '<td class="all">'+textoSeries(it)+'</td></tr>').join("");
-  host.innerHTML = '<div class="blk"><div class="bh"><span class="tag">'
-    + (PLACE==="home" ? "Casa" : "Gimnasio") + '</span><h2>Mis cargas</h2><span class="prog">'+L.length+'</span></div>'
-    + '<div style="padding:4px 16px 14px">'
+  host.innerHTML = '<div class="blk" id="blk-cargas">'
+    + '<div class="bh" role="button" tabindex="0" onclick="toggleBlk(&quot;cargas&quot;)"><span class="tag">'
+    + (PLACE==="home" ? "Casa" : "Gimnasio") + '</span><h2>Mis cargas</h2><span class="prog">'+L.length+'</span>'
+    + '<span class="bcaret">\u203a</span></div>'
+    + '<div class="bbody"><div style="padding:4px 16px 14px">'
     + '<p style="font-size:13px;color:var(--muted);margin:10px 0 4px">Historial independiente para cada lugar: '
     + 'lo que anotes en casa no toca lo del gimnasio, y al revés.</p>'
     + '<table class="adjt"><tr><th>Ejercicio</th><th>Carga</th><th>Series × reps</th></tr>'+rows+'</table>'
     + '<div class="panact"><button class="mini go" onclick="copyHistorial()" id="histbtn">Copiar historial para revisión</button>'
     + '<button class="mini" onclick="copyLink()" id="lnkbtn">Copiar enlace con mis datos</button>'
-    + '<button class="mini" onclick="clearLog()">Borrar cargas</button></div></div></div>';
+    + '<button class="mini" onclick="clearLog()">Borrar cargas</button></div></div></div></div>';
+  pintarBloques();
 }
 function copyHistorial(){
   const L = ["Historial de entrenamiento · " + (PLACE==="home" ? "casa" : "gimnasio"),
