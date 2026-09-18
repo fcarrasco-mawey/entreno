@@ -182,6 +182,9 @@
   .sensb{flex:1;min-width:92px;border:1px solid var(--line);background:var(--bg);border-radius:10px;
          padding:11px 8px;font-size:13px;font-weight:650}
   .sensb:active{transform:scale(.97)}
+  .sens.pide{background:var(--accent-soft);border-radius:12px;padding:10px 10px 12px;margin:12px -10px 0}
+  .sens.pide .senst{color:var(--accent)}
+  .sens.pide .sensb{border-color:var(--accent)}
   .sensb.s-facil{border-color:var(--done);color:var(--done)}
   .sensb.s-fallo{border-color:var(--warn);color:var(--warn)}
   .deshacer{margin-top:10px;font-size:12px;color:var(--muted)}
@@ -1329,10 +1332,10 @@ const PLAN_GYM = [MOB_BLK,
 
 const PLAN_HOME = [MOB_BLK,
 {id:"c1", kind:"day", tag:"Día 1", title:"Torso A · horizontal y dorsal", items:[
-  {b:"1",  n:"Fondos en anillas", rng:R(6,10), n_:4, rest:135, rir:"2", prog:PROG.press},
-  {b:"2A", n:"Dominadas", rng:R(6,10), n_:3, rest:45, ss:"A", rir:"1-2", prog:PROG.domC},
+  {b:"1",  n:"Fondos en anillas", pc:true, rng:R(6,10), n_:4, rest:135, rir:"2", prog:PROG.press},
+  {b:"2A", n:"Dominadas", pc:true, rng:R(6,10), n_:3, rest:45, ss:"A", rir:"1-2", prog:PROG.domC},
   {b:"2B", n:"Press inclinado 30° con mancuernas", rng:R(10,12), n_:3, rest:60, ss:"A", rir:"1-2", par:true, prog:PROG.incl},
-  {b:"3A", n:"Remo invertido en anillas", rng:R(10,12), n_:3, rest:45, ss:"B", rir:"1-2", prog:PROG.remoC},
+  {b:"3A", n:"Remo invertido en anillas", pc:true, rng:R(10,12), n_:3, rest:45, ss:"B", rir:"1-2", prog:PROG.remoC},
   {b:"3B", n:"Elevación lateral con mancuernas", rng:R(15,20), n_:3, rest:60, ss:"B", rir:"0-1", par:true, prog:PROG.lat},
   {b:"4A", n:"Curl con mancuernas", rng:R(10,15), n_:2, rest:45, ss:"C", rir:"0-1", par:true, prog:PROG.tempo},
   {b:"4B", n:"Extensión de tríceps sobre cabeza", rng:R(10,15), n_:2, rest:45, ss:"C", rir:"0-1", prog:PROG.tempo}
@@ -1346,9 +1349,9 @@ const PLAN_HOME = [MOB_BLK,
   {b:"3B", n:"Curl nórdico con los pies bajo el banco", rng:R(6,10), n_:3, rest:40, ss:"B", rir:"1-2", prog:PROG.nordico}
 ]},
 {id:"c3", kind:"day", tag:"Día 3", title:"Torso B · espalda y hombro", items:[
-  {b:"1",  n:"Dominadas", rng:R(6,10), n_:4, rest:135, rir:"2", prog:PROG.domC},
+  {b:"1",  n:"Dominadas", pc:true, rng:R(6,10), n_:4, rest:135, rir:"2", prog:PROG.domC},
   {b:"2A", n:"Press militar sentado con mancuernas", rng:R(8,10), n_:3, rest:45, ss:"A", rir:"1-2", par:true, prog:PROG.press},
-  {b:"2B", n:"Remo invertido en anillas", rng:R(10,12), n_:3, rest:50, ss:"A", rir:"1-2", prog:PROG.remoC},
+  {b:"2B", n:"Remo invertido en anillas", pc:true, rng:R(10,12), n_:3, rest:50, ss:"A", rir:"1-2", prog:PROG.remoC},
   {b:"3A", n:"Press inclinado con mancuernas", rng:R(10,12), n_:3, rest:45, ss:"B", rir:"1-2", par:true, prog:PROG.incl},
   {b:"3B", n:"Elevaciones laterales", rng:R(15,20), n_:3, rest:50, ss:"B", rir:"0-1", par:true, prog:PROG.lat},
   {b:"4",  n:"Circuito: face pull → curl martillo → fondos", rng:R(12,15), n_:2, rest:45, circ:3, rir:"0-1", prog:PROG.circ}
@@ -1405,6 +1408,44 @@ const REPS = {}; // repeticiones que estás haciendo, dentro del rango
 const LOG = {};  // historial: [{w:peso, r:reps, f:sensación}]
 const key = (b,i) => b + ":" + i;
 
+/* Clave de PROGRESIÓN. Las series se marcan por día (key), pero la carga y el
+   historial van por EJERCICIO: si el mismo movimiento sale el día 1 y el día 3,
+   comparte peso e historial. Gimnasio y casa siguen totalmente separados. */
+const MISMO = {
+  "Press inclinado 30\u00b0 con mancuernas": "Press inclinado con mancuernas",
+  "Press inclinado 45\u00b0 con mancuernas": "Press inclinado con mancuernas",
+  "Elevaci\u00f3n lateral con mancuernas": "Elevaciones laterales"
+};
+const canon = n => MISMO[n] || n;
+const ekey = (b,n) => b.charAt(0) + "|" + canon(n);
+function marcarClaves(){
+  [PLAN_GYM, PLAN_HOME].forEach(P => P.forEach(b => (b.items||[]).forEach((it,i)=>{
+    it._k = key(b.id, i); it._e = ekey(b.id, it.n);
+  })));
+}
+marcarClaves();
+
+/* Los datos guardados antes iban por día ("g1:0"). Se traspasan a la clave por
+   ejercicio para no perder nada de lo ya registrado. */
+function migrarClaves(){
+  const mapa = {};
+  [PLAN_GYM, PLAN_HOME].forEach(P => P.forEach(b => (b.items||[]).forEach((it,i)=>{
+    if(it.rng) mapa[key(b.id,i)] = ekey(b.id, it.n);
+  })));
+  [W, REPS].forEach(obj => Object.keys(obj).forEach(k=>{
+    const n = mapa[k]; if(!n || n === k) return;
+    if(obj[k] !== "" && obj[k] != null) obj[n] = obj[k];
+    delete obj[k];
+  }));
+  Object.keys(LOG).forEach(k=>{
+    const n = mapa[k]; if(!n || n === k) return;
+    const h = LOG[n] || (LOG[n] = []);
+    (LOG[k]||[]).forEach(e=>h.push(e));
+    if(h.length > 6) h.splice(0, h.length-6);
+    delete LOG[k];
+  });
+}
+
 /* ================= persistencia ================= */
 let LOADING = false;
 const LSKEY = "entreno.v3";
@@ -1429,6 +1470,7 @@ function applyState(st){
   if(st.p === "home" || st.p === "gym"){ PLACE = st.p; PLAN = (PLACE==="home") ? PLAN_HOME : PLAN_GYM; }
   Object.assign(S, st.s || {}); Object.assign(W, st.c || {}); Object.assign(REPS, st.r || {});
   Object.assign(LOG, st.l || {});
+  migrarClaves();
   return true;
 }
 function loadState(){
@@ -1448,23 +1490,23 @@ function series(it){
   if(!it.rng) return it.n_;
   return Math.max(1, it.n_ - (SEMANAS[WEEK].deload && !it.explos && !it.cond ? 1 : 0));
 }
-function repsDe(it){ return REPS[it._k] || (it.rng ? it.rng[0] : 1); }
+function repsDe(it){ return REPS[it._e] || (it.rng ? it.rng[0] : 1); }
 function textoSeries(it){
   if(it.s) return it.s;
   if(it.cond) return "6 rondas · 30 s fuerte / 30 s suave";
   const u = it.seg ? " s" : "";
   const cola = it.lado ? " / lado" : "";
-  const r = REPS[it._k] ? String(repsDe(it)) : (it.rng[0]===it.rng[1] ? String(it.rng[0]) : it.rng[0]+"–"+it.rng[1]);
+  const r = REPS[it._e] ? String(repsDe(it)) : (it.rng[0]===it.rng[1] ? String(it.rng[0]) : it.rng[0]+"–"+it.rng[1]);
   return series(it) + " × " + r + u + cola;
 }
-function pesoTxt(it){ return W[it._k] || ""; }
+function pesoTxt(it){ return W[it._e] || ""; }
 
 /* ================= duración ================= */
 const TEMPO = 3.5, MONTAJE = 12, CALENT = 270;
 function segundosSerie(it){
   if(it.cond) return 0;
   if(!it.rng){ const m = String(it.s).match(/(\d+)\s*s/); return (m?+m[1]:30) + MONTAJE; }
-  const r = REPS[it._k] || (it.rng[0]+it.rng[1])/2;
+  const r = REPS[it._e] || (it.rng[0]+it.rng[1])/2;
   let t = it.seg ? r : (it.explos ? r*2 : r*TEMPO);
   if(it.lado) t *= 2;
   if(it.circ) t *= it.circ;
@@ -1499,15 +1541,20 @@ function topeMancuerna(it){ return (PLACE === "home" && it.par !== undefined) ? 
 
 /* Devuelve qué toca hoy a partir de la última sesión registrada. */
 function propuesta(it){
-  const h = LOG[it._k] || [];
+  const h = LOG[it._e] || [];
   if(!h.length) return null;
   const u = h[h.length-1];
   const inc = incremento(it), lo = it.rng[0], hi = it.rng[1];
-  if(!esNumero(u.w)){
-    // en casa muchas veces no hay kilos: la progresión es de otro tipo
-    if(u.f === "facil") return {w:u.w, r:Math.min(hi, u.r+1), txt:"Sube una repetición. Si ya estás en "+hi+", pasa a tempo o a una versión más difícil."};
+  if(it.pc || !esNumero(u.w)){
+    // peso corporal: la progresión es SIEMPRE por repeticiones, nunca por carga
+    const tope = u.r >= hi;
+    if(u.f === "facil"){
+      if(tope) return {w:u.w, r:hi, txt:"Ya estás en "+hi+" repeticiones y te sobra margen. Aquí no se sube peso: pasa a excéntrica de 3–4 s, pausa de 1 s arriba o una versión más difícil."};
+      return {w:u.w, r:Math.min(hi, u.r+2), txt:"Te sobró margen: suma dos repeticiones."};
+    }
     if(u.f === "fallo") return {w:u.w, r:Math.max(lo, u.r-1), txt:"Baja una repetición y consolida antes de volver a subir."};
-    return {w:u.w, r:Math.min(hi, u.r+1), txt:"Mantén la variante y suma una repetición."};
+    if(tope) return {w:u.w, r:hi, txt:"Mantén "+hi+" repeticiones hasta que te sobre margen."};
+    return {w:u.w, r:u.r+1, txt:"Una repetición más: "+(u.r+1)+"."};
   }
   const p = num(u.w);
   if(u.f === "fallo"){
@@ -1536,17 +1583,19 @@ function propuesta(it){
 /* Registrar cómo ha ido y aplicar la propuesta al momento. */
 function registrar(it, f){
   if(!it.rng) return;
-  const h = LOG[it._k] || (LOG[it._k] = []);
+  const h = LOG[it._e] || (LOG[it._e] = []);
   h.push({w: pesoTxt(it), r: repsDe(it), f: f});
   if(h.length > 6) h.splice(0, h.length-6);
   const p = propuesta(it);
-  if(p){ W[it._k] = p.w; REPS[it._k] = (p.r === it.rng[0] ? 0 : p.r); }
+  if(p){ W[it._e] = p.w; REPS[it._e] = (p.r === it.rng[0] ? 0 : p.r); }
+  const blkDe = PLAN.find(b=>(b.items||[]).indexOf(it) >= 0);
+  if(blkDe && (S[it._k]||0) >= series(it)) goNext(blkDe, it);
   const pan = document.getElementById("pan-"+it._k);
   if(pan){ pan.innerHTML=""; pan.dataset.filled=""; fillPanel(it); pan.classList.add("open"); }
   refrescarSinSaltar(it);
 }
 function borrarUltimo(it){
-  const h = LOG[it._k]; if(!h || !h.length) return;
+  const h = LOG[it._e]; if(!h || !h.length) return;
   h.pop();
   const pan = document.getElementById("pan-"+it._k);
   if(pan){ pan.innerHTML=""; pan.dataset.filled=""; fillPanel(it); pan.classList.add("open"); }
@@ -1584,7 +1633,7 @@ function build(){
     pb.innerHTML = '<div class="pfill" id="pf-'+blk.id+'"></div>'; B.appendChild(pb);
 
     blk.items.forEach((it,i)=>{
-      it._k = key(blk.id, i);
+      it._k = key(blk.id, i); it._e = ekey(blk.id, it.n);
       const row = document.createElement("div"); row.className="row"; row.id="row-"+it._k;
       const chk = document.createElement("button");
       chk.className="chk"; chk.id="chk-"+it._k; chk.onclick = ()=>tapSet(blk, it);
@@ -1644,7 +1693,7 @@ function fillPanel(it){
     u1.textContent = (it.seg ? "seg" : "reps") + (it.rng[0]===it.rng[1] ? "" : " · meta " + it.rng[1]);
     const p1=document.createElement("button"); p1.type="button"; p1.textContent="+";
     const setR = v => { const n=Math.max(1,Math.min(120,Math.round(v)));
-      REPS[it._k] = (n===it.rng[0] ? 0 : n); refrescarSinSaltar(it); };
+      REPS[it._e] = (n===it.rng[0] ? 0 : n); refrescarSinSaltar(it); };
     m1.onclick=()=>setR(repsDe(it)-1); p1.onclick=()=>setR(repsDe(it)+1);
     const apR=()=>{ const v=parseInt(String(ri.value).replace(/\D/g,""),10);
       if(!isNaN(v)) setR(v); else ri.value = repsDe(it); };
@@ -1664,13 +1713,13 @@ function fillPanel(it){
     u2.textContent = it.par ? "kg c/u" : "kg";
     const p2=document.createElement("button"); p2.type="button"; p2.textContent="+";
     const bump05 = d2 => {
-      const v = parseFloat(String(W[it._k]||"").replace(",", "."));
+      const v = parseFloat(String(W[it._e]||"").replace(",", "."));
       if(isNaN(v)) return;
-      W[it._k] = nice(Math.max(0, Math.round((v+d2)*2)/2));
+      W[it._e] = nice(Math.max(0, Math.round((v+d2)*2)/2));
       refrescarSinSaltar(it);
     };
     m2.onclick=()=>bump05(-0.5); p2.onclick=()=>bump05(0.5);
-    const apC=()=>{ W[it._k] = ci.value.trim(); refrescarSinSaltar(it); };
+    const apC=()=>{ W[it._e] = ci.value.trim(); refrescarSinSaltar(it); };
     ci.addEventListener("change",apC); ci.addEventListener("blur",apC);
     ci.addEventListener("focus",()=>ci.select());
     ci.addEventListener("keydown",e=>{ if(e.key==="Enter"){e.preventDefault(); ci.blur();} });
@@ -1678,17 +1727,23 @@ function fillPanel(it){
     act.appendChild(ac);
 
     const rst=document.createElement("button"); rst.className="mini";
-    rst.textContent="Reponer"; rst.onclick=()=>{ REPS[it._k]=0; W[it._k]=""; refrescarSinSaltar(it); };
+    rst.textContent="Reponer"; rst.onclick=()=>{ REPS[it._e]=0; W[it._e]=""; refrescarSinSaltar(it); };
     act.appendChild(rst);
   }
   pan.appendChild(act);
 
   if(it.rng && !it.cond && !it.explos){
-    const h = LOG[it._k] || [];
+    const h = LOG[it._e] || [];
     const caja = document.createElement("div"); caja.className = "prop";
     if(!h.length){
-      caja.innerHTML = '<p class="propt"><b>Primera vez.</b> Anota el peso con el que hagas '
-        + it.rng[0] + ' repeticiones dejándote 2 en reserva. A partir de ahí, la app te va marcando el siguiente.</p>';
+      const anotado = W[it._e];
+      caja.innerHTML = anotado
+        ? '<p class="propt"><b>Tienes anotados ' + anotado + (esNumero(anotado) ? (it.par ? " kg cada una" : " kg") : "")
+          + ', pero aún no me has dicho cómo fue.</b> Al acabar el ejercicio pulsa una de las tres opciones de abajo: '
+          + 'es lo que hace que a partir de la próxima vez el peso te lo marque yo.</p>'
+        : '<p class="propt"><b>Primera vez.</b> Anota el peso con el que hagas '
+          + it.rng[0] + ' repeticiones dejándote 2 en reserva, y al acabar pulsa cómo ha ido. '
+          + 'A partir de ahí te voy marcando yo el siguiente.</p>';
     } else {
       const u = h[h.length-1], p = propuesta(it);
       caja.innerHTML = '<p class="propt"><b>Hoy: ' + (p.w || "—") + (esNumero(p.w) ? (it.par ? " kg cada una" : " kg") : "")
@@ -1736,7 +1791,23 @@ function tapSet(blk, it){
     buzz(next === tope ? 18 : 12);
     if(it.rest){ setT(it.rest); startT(it.n); }
   }
-  if(next === tope) goNext(blk, it);
+  if(next === tope){
+    if(pedirSensacion(it)) return;
+    goNext(blk, it);
+  }
+}
+/* Al cerrar la última serie abrimos el ejercicio y resaltamos las tres opciones:
+   sin ese toque no hay historial y la app no puede marcarte el peso siguiente. */
+function pedirSensacion(it){
+  if(!it.rng || it.cond || it.explos) return false;
+  const pan = document.getElementById("pan-" + it._k);
+  if(!pan) return false;
+  if(!pan.classList.contains("open")) togglePanel(it._k);
+  const q = pan.querySelector(".sens");
+  if(!q) return false;
+  q.classList.add("pide");
+  setTimeout(()=>q.scrollIntoView({behavior:"smooth", block:"center"}), 240);
+  return true;
 }
 function goNext(blk, it){
   const i = blk.items.indexOf(it);
@@ -1769,7 +1840,7 @@ function refresh(){
         const p = pesoTxt(it);
         kg.textContent = p ? (p + (/^[\d.,]+$/.test(p) ? (it.par ? " kg c/u" : " kg") : "")) : "anota";
         kg.classList.toggle("vacio", !p);
-        kg.classList.toggle("sugerido", !!(LOG[it._k] && LOG[it._k].length));
+        kg.classList.toggle("sugerido", !!(LOG[it._e] && LOG[it._e].length));
       }
       const ri = document.getElementById("rep-"+it._k);
       if(ri && document.activeElement !== ri) ri.value = repsDe(it);
@@ -1791,14 +1862,18 @@ function resetAll(){
 /* ================= mis cargas ================= */
 function logList(){
   const out=[];
-  PLAN.forEach(b=>b.items.forEach(it=>{ if(W[it._k] || REPS[it._k]) out.push(it); }));
+  const vistos = {};
+  PLAN.forEach(b=>b.items.forEach(it=>{
+    if(vistos[it._e]) return;
+    if(W[it._e] || REPS[it._e]){ vistos[it._e] = 1; out.push(it); }
+  }));
   return out;
 }
 function renderLog(){
   const host = document.getElementById("adjlog"); const L = logList();
   if(!L.length){ host.innerHTML=""; host.style.display="none"; return; }
   host.style.display="block";
-  const rows = L.map(it=>'<tr><td>'+it.n+'</td><td class="nw">'+(W[it._k]||"—")+'</td>'
+  const rows = L.map(it=>'<tr><td>'+it.n+'</td><td class="nw">'+(W[it._e]||"—")+'</td>'
     + '<td class="all">'+textoSeries(it)+'</td></tr>').join("");
   host.innerHTML = '<div class="blk"><div class="bh"><span class="tag">'
     + (PLACE==="home" ? "Casa" : "Gimnasio") + '</span><h2>Mis cargas</h2><span class="prog">'+L.length+'</span></div>'
@@ -1813,15 +1888,16 @@ function renderLog(){
 function copyHistorial(){
   const L = ["Historial de entrenamiento · " + (PLACE==="home" ? "casa" : "gimnasio"),
              "Programa: 4 días, 45 min. Semana actual: " + SEMANAS[WEEK].t, ""];
-  let hay = false;
+  let hay = false; const vistos = {};
   PLAN.forEach(b=>{
     if(b.kind !== "day") return;
-    const con = b.items.filter(it=>(LOG[it._k]||[]).length);
+    const con = b.items.filter(it=>!vistos[it._e] && (LOG[it._e]||[]).length);
     if(!con.length) return;
     hay = true;
     L.push(b.tag + " · " + b.title);
     con.forEach(it=>{
-      const h = LOG[it._k];
+      vistos[it._e] = 1;
+      const h = LOG[it._e];
       const linea = h.map(e=>(e.w||"—") + "×" + e.r + " (" + ({facil:"sobró",justo:"justo",fallo:"no llegué"}[e.f]||e.f) + ")").join("  →  ");
       L.push("  " + it.n + " [" + it.rng[0] + "–" + it.rng[1] + " reps]: " + linea);
     });
@@ -1836,7 +1912,7 @@ function copyHistorial(){
       + '<div class="out"><pre style="white-space:pre-wrap;margin:0;font-size:12px">'+txt.replace(/</g,"&lt;")+'</pre></div>'); });
 }
 function clearLog(){
-  PLAN.forEach(b=>b.items.forEach(it=>{ delete W[it._k]; delete REPS[it._k]; delete LOG[it._k]; }));
+  PLAN.forEach(b=>b.items.forEach(it=>{ delete W[it._e]; delete REPS[it._e]; delete LOG[it._e]; }));
   refresh(); saveState(); renderLog();
 }
 function copyLink(){
@@ -1870,7 +1946,7 @@ function copySummary(){
     b.items.forEach(it=>{
       const c = S[it._k]||0; if(!c) return;
       L.push("  " + (c>=series(it)?"[x] ":"[ ] ") + it.n + " — " + c + "/" + series(it)
-        + " × " + repsDe(it) + (W[it._k] ? " · " + W[it._k] : ""));
+        + " × " + repsDe(it) + (W[it._e] ? " · " + W[it._e] : ""));
     });
   });
   const txt = L.join("\n"), btn = document.getElementById("cpbtn");
