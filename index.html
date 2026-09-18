@@ -67,6 +67,12 @@
   .dur{font-size:11.5px;font-weight:700;color:var(--accent);background:var(--accent-soft);
        padding:3px 8px;border-radius:999px;font-variant-numeric:tabular-nums}
   .row.ssline{border-left:3px solid var(--accent);margin-left:-3px}
+  .bh{cursor:pointer;-webkit-user-select:none;user-select:none}
+  .bh:active{background:var(--accent-soft)}
+  .bcaret{font-size:21px;line-height:1;color:var(--muted);transform:rotate(90deg);
+          transition:transform .18s ease;margin-left:2px}
+  .blk.cerrado .bcaret{transform:rotate(0deg)}
+  .blk.cerrado .bbody{display:none}
   .pbar{height:3px;background:var(--line)}
   .pfill{height:100%;background:var(--done);width:0;transition:width .2s}
 
@@ -98,6 +104,8 @@
   .frame span{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;
               color:var(--muted);font-weight:700;margin-top:-6px}
   .arrowsep{color:var(--guide);font-size:18px}
+  .frames.tres .frame svg{width:104px;height:104px}
+  .frames.tres .frame span{font-size:9.5px;letter-spacing:.05em}
   .pan ul{margin:8px 0 0;padding-left:18px}
   .pan li{margin:5px 0;font-size:13.5px}
   .panact{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;align-items:center}
@@ -1218,6 +1226,30 @@ const CASA_DRAW = [
 
 const DRAW = {};
 [].concat(MOB, D1, D2, D3, D4, MQ, CASA_DRAW).forEach(x => DRAW[x.name] = x);
+
+/* Un circuito no es un ejercicio: son tres seguidos. Se dibuja cada uno por
+   separado, con su propio movimiento, en vez de enseñar solo el primero. */
+function circuito(nombre, cues, partes){
+  const fuente = k => DRAW[k];
+  return {name:nombre, tag:"Circuito", cues:cues, indep:true,
+    labels: partes.map(x=>x[1]),
+    poses:  partes.map(x=>{ const d=fuente(x[0]); return d.poses[d.poses.length-1]; }),
+    desde:  partes.map(x=>fuente(x[0]).poses[0])};
+}
+const CUES_CIRC = [
+  "<b>Tres ejercicios seguidos.</b> Haces 12–15 repeticiones de cada uno en este orden, con unos 30 s entre ellos, y al terminar los tres descansas 45 s antes de la segunda ronda.",
+  "<b>Face pull:</b> goma a la altura de la cara, codos altos, tirando hacia la frente. Poca tensión y muchas repeticiones: es salud de hombro, no fuerza.",
+  "<b>Curl martillo:</b> palmas enfrentadas, codos pegados al cuerpo, sin balanceo.",
+  "Dos rondas. Solo la última serie de cada ejercicio llega a 0–1 repeticiones en reserva."
+];
+[
+ circuito("Circuito: face pull → curl martillo → tríceps",
+   CUES_CIRC.slice(0,3).concat(["<b>Tríceps:</b> una mancuerna a dos manos por encima de la cabeza, codos apuntando al techo y quietos. Baja hasta notar el estiramiento detrás del brazo."], CUES_CIRC.slice(3)),
+   [["Face pull con goma","Face pull"],["Curl martillo","Curl martillo"],["Extensión de tríceps sobre cabeza","Tríceps"]]),
+ circuito("Circuito: face pull → curl martillo → fondos",
+   CUES_CIRC.slice(0,3).concat(["<b>Fondos en anillas:</b> torso ligeramente inclinado hacia delante, baja hasta pasar de la paralela y sube sin encoger los hombros."], CUES_CIRC.slice(3)),
+   [["Face pull con goma","Face pull"],["Curl martillo","Curl martillo"],["Fondos en anillas o paralelas","Fondos"]])
+].forEach(x => DRAW[x.name] = x);
 // mismo movimiento, otro nombre según el material
 const ALIAS = {
  "Remo invertido en anillas": "Remo invertido en barra baja",
@@ -1241,8 +1273,6 @@ const ALIAS = {
  "Elevación lateral con mancuernas": "Elevaciones laterales",
  "Curl con barra": "Curl con barra",
  "Pallof press con polea o goma": "Pallof press con banda",
- "Circuito: face pull → curl martillo → tríceps": "Face pull con goma",
- "Circuito: face pull → curl martillo → fondos": "Face pull con goma",
  "Peso muerto rumano a una pierna": "Peso muerto a una pierna con kettlebell",
  "Acondicionamiento · bici, remo o SkiErg": "Step-up al banco",
  "Acondicionamiento · step-ups rápidos o shadow boxing": "Step-up al banco",
@@ -1406,6 +1436,7 @@ const S = {};    // series completadas
 const W = {};    // carga que anotas tú (texto libre: kilos, "PC", "banda"...)
 const REPS = {}; // repeticiones que estás haciendo, dentro del rango
 const LOG = {};  // historial: [{w:peso, r:reps, f:sensación}]
+const ABIERTO = {}; // qué días están desplegados
 const key = (b,i) => b + ":" + i;
 
 /* Clave de PROGRESIÓN. Las series se marcan por día (key), pero la carga y el
@@ -1450,12 +1481,13 @@ function migrarClaves(){
 let LOADING = false;
 const LSKEY = "entreno.v3";
 function snapshot(){
-  const st = {w:WEEK, p:PLACE, s:{}, c:{}, r:{}, l:{}};
+  const st = {w:WEEK, p:PLACE, s:{}, c:{}, r:{}, l:{}, o:{}};
   Object.keys(S).forEach(k=>{ if(S[k]) st.s[k]=S[k]; });
   Object.keys(W).forEach(k=>{ if(W[k]) st.c[k]=W[k]; });
   Object.keys(REPS).forEach(k=>{ if(REPS[k]) st.r[k]=REPS[k]; });
   st.l = {};
   Object.keys(LOG).forEach(k=>{ if(LOG[k] && LOG[k].length) st.l[k]=LOG[k].slice(-6); });
+  Object.keys(ABIERTO).forEach(k=>{ st.o[k] = ABIERTO[k] ? 1 : 0; });
   return st;
 }
 function saveState(){
@@ -1470,6 +1502,7 @@ function applyState(st){
   if(st.p === "home" || st.p === "gym"){ PLACE = st.p; PLAN = (PLACE==="home") ? PLAN_HOME : PLAN_GYM; }
   Object.assign(S, st.s || {}); Object.assign(W, st.c || {}); Object.assign(REPS, st.r || {});
   Object.assign(LOG, st.l || {});
+  Object.assign(ABIERTO, st.o || {});
   migrarClaves();
   return true;
 }
@@ -1590,8 +1623,10 @@ function registrar(it, f){
   if(p){ W[it._e] = p.w; REPS[it._e] = (p.r === it.rng[0] ? 0 : p.r); }
   const blkDe = PLAN.find(b=>(b.items||[]).indexOf(it) >= 0);
   if(blkDe && (S[it._k]||0) >= series(it)) goNext(blkDe, it);
-  const pan = document.getElementById("pan-"+it._k);
-  if(pan){ pan.innerHTML=""; pan.dataset.filled=""; fillPanel(it); pan.classList.add("open"); }
+  // al valorar el ejercicio se recoge solo: ya queda anotado y toca el siguiente
+  const pan = document.getElementById("pan-"+it._k), row = document.getElementById("row-"+it._k);
+  if(pan){ pan.innerHTML=""; pan.dataset.filled=""; pan.classList.remove("open"); }
+  if(row) row.classList.remove("open");
   refrescarSinSaltar(it);
 }
 function borrarUltimo(it){
@@ -1607,10 +1642,13 @@ function framesFor(name){
   const d = drawFor(name);
   const box = document.createElement("div"); box.className = "frames";
   if(!d) return box;
+  if(d.poses.length > 2) box.className += " tres";
   d.poses.forEach((p,k)=>{
-    if(k>0){ const a=document.createElement("span"); a.className="arrowsep"; a.textContent="›"; box.appendChild(a); }
+    if(k>0){ const a=document.createElement("span"); a.className="arrowsep";
+      a.textContent = d.indep ? "+" : "›"; box.appendChild(a); }
     const f=document.createElement("div"); f.className="frame";
-    f.appendChild(render(p, k>0 ? d.poses[k-1] : null));
+    const prev = d.indep ? (d.desde ? d.desde[k] : null) : (k>0 ? d.poses[k-1] : null);
+    f.appendChild(render(p, prev));
     const s=document.createElement("span");
     s.textContent = (d.labels && d.labels[k]) || (k===0 ? "Inicio" : "Final");
     f.appendChild(s); box.appendChild(f);
@@ -1625,12 +1663,17 @@ function build(){
     const B = document.createElement("div");
     B.className = "blk" + (blk.kind==="mob" ? " mobb" : ""); B.id = "blk-" + blk.id;
     const h = document.createElement("div"); h.className="bh";
+    h.setAttribute("role","button"); h.setAttribute("tabindex","0");
     h.innerHTML = '<span class="tag">'+blk.tag+'</span><h2>'+blk.title+'</h2>'
       + (textoDuracion(blk) ? '<span class="dur">'+textoDuracion(blk)+'</span>' : "")
-      + '<span class="prog" id="pg-'+blk.id+'"></span>';
+      + '<span class="prog" id="pg-'+blk.id+'"></span>'
+      + '<span class="bcaret">\u203a</span>';
+    h.onclick = ()=>toggleBlk(blk.id);
+    h.onkeydown = e=>{ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); toggleBlk(blk.id); } };
     B.appendChild(h);
     const pb=document.createElement("div"); pb.className="pbar";
     pb.innerHTML = '<div class="pfill" id="pf-'+blk.id+'"></div>'; B.appendChild(pb);
+    const body = document.createElement("div"); body.className="bbody";
 
     blk.items.forEach((it,i)=>{
       it._k = key(blk.id, i); it._e = ekey(blk.id, it.n);
@@ -1646,13 +1689,14 @@ function build(){
       main.appendChild(txt);
       const k=document.createElement("span"); k.className="rkg"; k.id="kg-"+it._k; main.appendChild(k);
       const c=document.createElement("span"); c.className="caret"; c.textContent="›"; main.appendChild(c);
-      row.appendChild(main); B.appendChild(row);
+      row.appendChild(main); body.appendChild(row);
       const pan = document.createElement("div"); pan.className="pan"; pan.id="pan-"+it._k;
-      B.appendChild(pan);
+      body.appendChild(pan);
     });
+    B.appendChild(body);
     app.appendChild(B);
   });
-  refresh();
+  abrirPorDefecto(); pintarBloques(); refresh();
 }
 
 function subTexto(it){
@@ -1764,6 +1808,32 @@ function fillPanel(it){
       caja.appendChild(del);
     }
     pan.appendChild(caja);
+  }
+}
+/* ================= días plegables ================= */
+function pintarBloques(){
+  PLAN.forEach(b=>{
+    const el = document.getElementById("blk-" + b.id);
+    if(el) el.classList.toggle("cerrado", !ABIERTO[b.id]);
+  });
+}
+function abrirPorDefecto(){
+  const dias = PLAN.filter(b=>b.kind === "day");
+  if(!dias.length || dias.some(b=>b.id in ABIERTO)) return;
+  const pendiente = dias.find(b=>b.items.some(it=>(S[it._k]||0) < series(it)));
+  ABIERTO[(pendiente || dias[0]).id] = 1;
+}
+function toggleBlk(id){
+  const blk = PLAN.find(b=>b.id === id); if(!blk) return;
+  const abierto = !!ABIERTO[id];
+  if(!abierto && blk.kind === "day"){
+    PLAN.forEach(b=>{ if(b.kind === "day") ABIERTO[b.id] = 0; });
+  }
+  ABIERTO[id] = abierto ? 0 : 1;
+  pintarBloques(); saveState();
+  if(!abierto){
+    const el = document.getElementById("blk-" + id);
+    if(el) setTimeout(()=>el.scrollIntoView({behavior:"smooth", block:"start"}), 70);
   }
 }
 function togglePanel(k){
